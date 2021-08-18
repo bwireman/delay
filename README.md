@@ -71,16 +71,58 @@ let res = delay.retry(d, 3, 200)
 // res = Error("bummer")
 ```
 
+## Operators
+
+```elixir
+defmodule Foo do
+  use Delay.Arrows
+
+...
+
+end
+```
+
+provides some convinces
+
+| operator | usage                   |
+| -------- | ----------------------- |
+| `~>`     | `:delay.map/2`          |
+| `~>>`    | `:delay.flat_map/2`     |
+| `delay`  | `:delay.delay_effect/1` |
+| `run`    | `:delay.run/1`          |
+
+### Example
+
+```elixir
+defmodule Foo do
+  use Delay.Arrows
+
+  # returns {:ok, "Hello World!"}
+  def bar() do
+    delay(fn -> {:ok, "Hello"} end)
+    ~> fn x -> {:ok, x <> " World!"} end
+    |> run
+  end
+
+  # returns {:ok, "Hello Again!"}
+  def baz() do
+    delay(fn -> {:ok, "Hello"} end)
+    ~>> fn x -> {:ok, delay(fn -> {:ok, x <> " Again!"} end)} end
+    |> run
+  end
+end
+```
+
 ## FAQ
 
-> Doesn't the concept of a delayed side effect kind of lose value in the world of actor model concurrency and zero shared memory?!
+Doesn't the concept of a delayed side effect kind of lose value in the world of actor model concurrency and zero shared memory?!
 
-A little
+> A little
 
-> Then why did you write this?
+Then why did you write this?
 
-For fun
+> For fun
 
-> Is gleam ✨ actually excellent?
+Is gleam ✨ actually excellent?
 
-So far
+> So far

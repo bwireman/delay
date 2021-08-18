@@ -6,7 +6,7 @@ defmodule DelayTest do
     %{}
   end
 
-  test "test map" do
+  test "map" do
     assert :delay.delay_effect(fn -> {:ok, "Hello"} end)
            |> :delay.map(fn x -> {:ok, x <> " World!"} end)
            |> :delay.run() == {:ok, "Hello World!"}
@@ -17,9 +17,11 @@ defmodule DelayTest do
            |> :delay.run() == {:ok, "2"}
   end
 
-  test "test flat_map" do
+  test "flat_map" do
     assert :delay.delay_effect(fn -> {:ok, "Hello"} end)
-           |> :delay.flat_map(fn x -> {:ok, :delay.delay_effect(fn -> {:ok, x <> " Again!"} end)} end)
+           |> :delay.flat_map(fn x ->
+             {:ok, :delay.delay_effect(fn -> {:ok, x <> " Again!"} end)}
+           end)
            |> :delay.run() == {:ok, "Hello Again!"}
 
     assert :delay.delay_effect(fn -> {:ok, "Hello"} end)
@@ -30,11 +32,13 @@ defmodule DelayTest do
 
     assert {:error, _} =
              :delay.delay_effect(fn -> {:ok, "Hello"} end)
-             |> :delay.flat_map(fn _ -> {:error, :delay.delay_effect(fn -> {:ok, "Nice!"} end)} end)
+             |> :delay.flat_map(fn _ ->
+               {:error, :delay.delay_effect(fn -> {:ok, "Nice!"} end)}
+             end)
              |> :delay.run()
   end
 
-  test "test error" do
+  test "error" do
     assert :delay.delay_effect(fn -> {:error, "ERROR"} end)
            |> :delay.map(fn x -> {:ok, x <> " World!"} end)
            |> :delay.map(fn x -> :ets.insert(:tests, {:k1, x}) end)
@@ -43,7 +47,7 @@ defmodule DelayTest do
     assert :ets.lookup(:tests, :k1) == []
   end
 
-  test "test side effects, run" do
+  test "side effects, run" do
     d = :delay.delay_effect(fn -> :ets.insert(:tests, {:k2, :v1}) end)
     assert :ets.lookup(:tests, :k2) == []
 
@@ -51,7 +55,7 @@ defmodule DelayTest do
     assert :ets.lookup(:tests, :k2) == [k2: :v1]
   end
 
-  test "test side effects, drain" do
+  test "side effects, drain" do
     d =
       :delay.delay_effect(fn ->
         :ets.insert(:tests, {:k3, :v1})
@@ -65,7 +69,7 @@ defmodule DelayTest do
     assert :ets.lookup(:tests, :k3) == [k3: :v1]
   end
 
-  test "test retry" do
+  test "retry" do
     :ets.insert(:tests, {:k4, 0})
 
     d =

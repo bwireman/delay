@@ -6,31 +6,18 @@ defmodule Delay.Arrows do
     end
   end
 
-  def ({:continue, _} = l) ~> r when is_function(r) do
-    :delay.map(l, r)
-  end
+  def ({:continue, lf} = l) ~> r when is_function(r) and is_function(lf), do: :delay.map(l, r)
 
-  def ({:stop, _} = l) ~> r when is_function(r) do
-    :delay.map(l, r)
-  end
+  def ({:stop, _} = l) ~> r when is_function(r), do: :delay.map(l, r)
 
-  def ({:continue, _} = l) ~>> r when is_function(r) do
-    :delay.flat_map(l, r)
-  end
+  def ({:continue, lf} = l) ~>> r when is_function(r) and is_function(lf),
+    do: :delay.flat_map(l, r)
 
-  def ({:stop, _} = l) ~>> r when is_function(r) do
-    :delay.flat_map(l, r)
-  end
+  def ({:stop, _} = l) ~>> r when is_function(r), do: :delay.flat_map(l, r)
 
-  def run({:continue, _} = l) do
-    :delay.run(l)
-  end
+  def run({:continue, lf} = l) when is_function(lf), do: :delay.run(l)
 
-  def run({:stop, _} = l) do
-    :delay.run(l)
-  end
+  def run({:stop, _} = l), do: :delay.run(l)
 
-  def delay(f) when is_function(f) do
-    :delay.delay_effect(f)
-  end
+  def delay(f) when is_function(f), do: :delay.delay_effect(f)
 end

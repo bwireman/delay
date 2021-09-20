@@ -82,7 +82,7 @@ defmodule Foo do
 end
 ```
 
-provides some convinces
+provides some conveniences
 
 | operator | usage                   |
 | -------- | ----------------------- |

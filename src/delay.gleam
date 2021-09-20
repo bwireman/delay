@@ -99,5 +99,12 @@ fn chain(
   }
 }
 
-external fn sleep(time: Int) -> Nil =
-  "timer" "sleep"
+if erlang {
+  external fn sleep(time: Int) -> Nil =
+    "timer" "sleep"
+}
+
+if javascript {
+  external fn sleep(time: Int) -> Nil =
+    "sleep" "sleep"
+}

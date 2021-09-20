@@ -26,3 +26,5 @@ delay-*.tar
 /tmp/
 
 /gen/
+
+/js/

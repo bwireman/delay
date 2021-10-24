@@ -38,7 +38,7 @@ res = :delay.run(d)
 
 ## More info
 
-The result of `delay_effect` is really just a first class function with a nice API wrapper. It isn't executed until put through one of `run/1`, `drain/1` or `retry/3`. And can be called as many times as you want.
+The result of `delay_effect` is really just a first class function with a nice API wrapper. It isn't executed until put through one of `run/1`, `drain/1` or `fallthrough/1`. And can be called as many times as you want.
 
 ```rust
 /// gleam
@@ -63,7 +63,7 @@ Effects can be retried as well via `retry/3`
 /// gleam
 // using the same effect `d` from above
 
-let res = delay.retry(d, 3, 200)
+let res = delay.retry(d, 3, 200) |> delay.run()
 // Hello
 // Hello
 // Hello

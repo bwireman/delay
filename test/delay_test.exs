@@ -38,56 +38,76 @@ defmodule DelayTest do
              |> :delay.run()
   end
 
-  test "error" do
+  test "short circuit on errors" do
     assert :delay.delay_effect(fn -> {:error, "ERROR"} end)
            |> :delay.map(fn x -> {:ok, x <> " World!"} end)
-           |> :delay.map(fn x -> :ets.insert(:tests, {:k1, x}) end)
+           |> :delay.map(fn x -> :ets.insert(:tests, {:short_circuit, x}) end)
            |> :delay.run() == {:error, "ERROR"}
 
-    assert :ets.lookup(:tests, :k1) == []
+    assert :ets.lookup(:tests, :short_circuit) == []
   end
 
   test "side effects, run" do
-    d = :delay.delay_effect(fn -> :ets.insert(:tests, {:k2, :v1}) end)
-    assert :ets.lookup(:tests, :k2) == []
+    d = :delay.delay_effect(fn -> :ets.insert(:tests, {:side_effects, :v1}) end)
+    assert :ets.lookup(:tests, :side_effects) == []
 
     d |> :delay.run()
-    assert :ets.lookup(:tests, :k2) == [k2: :v1]
+    assert :ets.lookup(:tests, :side_effects) == [side_effects: :v1]
   end
 
   test "side effects, drain" do
     d =
       :delay.delay_effect(fn ->
-        :ets.insert(:tests, {:k3, :v1})
+        :ets.insert(:tests, {:drain, :v1})
         {:ok, "TEST"}
       end)
       |> :delay.map(fn x -> x end)
 
-    assert :ets.lookup(:tests, :k3) == []
+    assert :ets.lookup(:tests, :drain) == []
 
     assert d |> :delay.drain() == nil
-    assert :ets.lookup(:tests, :k3) == [k3: :v1]
+    assert :ets.lookup(:tests, :drain) == [drain: :v1]
   end
 
   test "retry" do
-    :ets.insert(:tests, {:k4, 0})
+    :ets.insert(:tests, {:retry, 0})
 
     d =
       :delay.delay_effect(fn ->
-        case :ets.lookup(:tests, :k4) do
-          [k4: 5] ->
+        case :ets.lookup(:tests, :retry) do
+          [retry: 5] ->
             {:ok, "yay"}
 
           _ ->
-            :ets.update_counter(:tests, :k4, {2, 1})
+            :ets.update_counter(:tests, :retry, {2, 1})
             {:error, "some error"}
         end
       end)
 
-    assert :ets.lookup(:tests, :k4) == [k4: 0]
-    d |> :delay.retry(10, 1)
+    assert :ets.lookup(:tests, :retry) == [retry: 0]
+    d |> :delay.retry(10, 0) |> :delay.run()
 
     assert d |> :delay.run() == {:ok, "yay"}
-    assert :ets.lookup(:tests, :k4) == [k4: 5]
+    assert :ets.lookup(:tests, :retry) == [retry: 5]
+  end
+
+  test "repeat" do
+    assert :delay.repeat(:delay.delay_effect(fn -> {:ok, 1} end), 2) == [{:ok, 1}, {:ok, 1}]
+  end
+
+  test "fallthrough" do
+    :ets.insert(:tests, {:fallthrough, 0})
+
+    failing =
+      :delay.delay_effect(fn ->
+        :ets.update_counter(:tests, :fallthrough, {2, 1})
+        {:error, "ERROR"}
+      end)
+
+    passing = :delay.delay_effect(fn -> {:ok, "passed!"} end)
+    skipped = :delay.delay_effect(fn -> {:error, "shouldn't show up"} end)
+
+    assert :delay.fallthrough([failing, failing, passing, failing, skipped]) == {:ok, "passed!"}
+    assert :ets.lookup(:tests, :fallthrough) == [fallthrough: 2]
   end
 end

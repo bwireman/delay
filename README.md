@@ -4,7 +4,7 @@ A dead simple data-structure for delaying side effects. Written in the excellent
 
 ## Basic Usage
 
-```rust
+```gleam
 /// gleam
 let d = delay_effect(fn() {
   gleam.io.println("Hello")
@@ -40,7 +40,7 @@ res = :delay.run(d)
 
 The result of `delay_effect` is really just a first class function with a nice API wrapper. It isn't executed until put through one of `run/1`, `drain/1` or `fallthrough/1`. And can be called as many times as you want.
 
-```rust
+```gleam
 /// gleam
 let d = delay_effect(fn() {
   gleam.io.println("Hello")
@@ -59,7 +59,7 @@ If one of the functions in the chain fails, the rest will short circuit and the 
 
 Effects can be retried as well via `retry/3`
 
-```rust
+```gleam
 /// gleam
 // using the same effect `d` from above
 

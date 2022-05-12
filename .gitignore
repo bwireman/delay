@@ -28,3 +28,4 @@ delay-*.tar
 /gen/
 
 /js/
+build/

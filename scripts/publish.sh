@@ -3,7 +3,7 @@ set -e
 
 cd "$(dirname $0)/.."
 
-VER="$1"
+VER="v$1"
 if [ -z "$VER" ]; then
     echo "Must set version for release"
     echo "Usage:" "$0" "<version>"

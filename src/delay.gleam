@@ -83,16 +83,10 @@ pub fn retry_with_backoff(
   delay_effect(fn() { do_retry(delayed, retries, 0, True) })
 }
 
-if erlang {
-  external fn sleep(time: Int) -> Nil =
-    "timer" "sleep"
-}
-
-if javascript {
-  // sleep is a noop in js
-  fn sleep(_: Int) {
-    Nil
-  }
+@external(erlang, "timer", "sleep")
+fn sleep(_: Int) -> Nil {
+  // JS sleep is a noop
+  Nil
 }
 
 fn do_retry(
@@ -157,5 +151,6 @@ pub fn fallthrough(options: List(Delay(val, err))) -> Result(val, err) {
         Ok(res) -> Ok(res)
         Error(_) -> fallthrough(rest)
       }
+    [] -> panic("Empty list")
   }
 }

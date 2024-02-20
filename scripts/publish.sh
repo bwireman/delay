@@ -24,7 +24,7 @@ fi
 function publish {
     gleam clean
     gleam build
-    gleam format
+    gleam format --check src test
     gleam test
     echo "Tagging" "$VER"
     git tag "$VER"

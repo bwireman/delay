@@ -3,11 +3,14 @@ pub opaque type Delay(val, error) {
   Stop(error)
 }
 
-// api
+/// store an effect to be run later
+/// if `f` returns an Error then chain will stop 
 pub fn delay_effect(f: fn() -> Result(val, error)) -> Delay(val, error) {
   Continue(f)
 }
 
+/// chains an operation onto an existing delay to be run one then into the next
+/// if delayed has already error'd then `f` will be ignored 
 pub fn map(
   delayed: Delay(val, error),
   f: fn(val) -> Result(f_res, error),
@@ -33,6 +36,7 @@ fn chain(
   }
 }
 
+/// flatten nested Delay
 pub fn flatten(
   delayed: Delay(Delay(inner_res, error), error),
 ) -> Delay(inner_res, error) {
@@ -58,6 +62,7 @@ pub fn flatten(
   |> delay_effect
 }
 
+/// map and then flatten Delay
 pub fn flat_map(
   delayed: Delay(val, error),
   f: fn(val) -> Result(Delay(f_res, error), error),
@@ -66,7 +71,8 @@ pub fn flat_map(
   |> flatten
 }
 
-// delay is a noop in JS
+/// returns a Delay that will be re-attempted `retries` times with `delay` ms in between
+/// NOTE: `delay` is ignored in JS
 pub fn retry(
   delayed: Delay(val, error),
   retries: Int,
@@ -75,7 +81,8 @@ pub fn retry(
   delay_effect(fn() { do_retry(delayed, retries, delay, False) })
 }
 
-// there is no backoff in JS
+/// returns a Delay that will be re-attempted `retries` times with an increasing backoff delay
+/// NOTE: there is no backoff in JS
 pub fn retry_with_backoff(
   delayed: Delay(val, error),
   retries: Int,
@@ -83,16 +90,10 @@ pub fn retry_with_backoff(
   delay_effect(fn() { do_retry(delayed, retries, 0, True) })
 }
 
-if erlang {
-  external fn sleep(time: Int) -> Nil =
-    "timer" "sleep"
-}
-
-if javascript {
-  // sleep is a noop in js
-  fn sleep(_: Int) {
-    Nil
-  }
+@external(erlang, "timer", "sleep")
+fn sleep(_: Int) -> Nil {
+  // JS sleep is a noop
+  Nil
 }
 
 fn do_retry(
@@ -119,6 +120,8 @@ fn do_retry(
   }
 }
 
+/// run a delayed effect and get the result
+/// short-circuiting if any in the chain returns an Error
 pub fn run(delayed: Delay(val, error)) -> Result(val, error) {
   case delayed {
     Continue(f) -> f()
@@ -126,6 +129,14 @@ pub fn run(delayed: Delay(val, error)) -> Result(val, error) {
   }
 }
 
+/// run a delayed effect and throw away the result
+/// short-circuiting if any in the chain returns an Error
+pub fn drain(delayed: Delay(val, error)) -> Nil {
+  let _ = run(delayed)
+  Nil
+}
+
+/// repeat a Delay and return the results in a list 
 pub fn repeat(
   delayed: Delay(val, error),
   repitions: Int,
@@ -144,11 +155,7 @@ fn do_repeat(
   }
 }
 
-pub fn drain(delayed: Delay(val, error)) -> Nil {
-  let _ = run(delayed)
-  Nil
-}
-
+/// attempt multiple Delays until one returns an Ok
 pub fn fallthrough(options: List(Delay(val, err))) -> Result(val, err) {
   case options {
     [last] -> run(last)
@@ -157,5 +164,6 @@ pub fn fallthrough(options: List(Delay(val, err))) -> Result(val, err) {
         Ok(res) -> Ok(res)
         Error(_) -> fallthrough(rest)
       }
+    [] -> panic("Empty list")
   }
 }

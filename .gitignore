@@ -29,3 +29,4 @@ delay-*.tar
 
 /js/
 build/
+test/side_effects/*.test

@@ -131,7 +131,9 @@ pub fn retry_test() {
 }
 
 @external(erlang, "erlang", "system_time")
-fn system_time() -> Int
+fn system_time() -> Int {
+  0
+}
 
 pub fn retry_with_backoff_test() {
   let assert Ok(Nil) = simplifile.create_file(retry_with_backoff_filename)

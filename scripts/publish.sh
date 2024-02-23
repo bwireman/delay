@@ -25,7 +25,8 @@ function publish {
     gleam clean
     gleam build
     gleam format --check src test
-    gleam test
+    gleam test --target erlang
+    gleam test --target javascript
     echo "Tagging" "$VER"
     git tag "$VER"
     git push origin "$VER"

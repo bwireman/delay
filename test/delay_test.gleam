@@ -20,16 +20,29 @@ const retry_with_backoff_filename = "test/side_effects/retry_with_backof.test"
 
 const repeat_filename = "test/side_effects/repeat.test"
 
+fn init_ok(v) {
+  fn() { Ok(v) }
+}
+
+fn do_ok(v) {
+  fn(_) { Ok(v) }
+}
+
+fn init_error(v) {
+  fn() { Error(v) }
+}
+
+fn do_error(v) {
+  fn(_) { Error(v) }
+}
+
 fn do_panic(_) {
   panic("Shouldn't be called")
 }
 
-fn do_error() {
-  Error("ERR")
-}
-
-fn do_ok() {
-  Ok("k")
+@external(erlang, "erlang", "system_time")
+fn system_time() -> Int {
+  0
 }
 
 pub fn main() {
@@ -48,23 +61,23 @@ pub fn main() {
 }
 
 pub fn build_delay_test() {
-  delay.delay_effect(do_ok)
+  delay.delay_effect(init_ok(1))
   |> delay.run()
   |> should.be_ok()
 
-  delay.delay_effect(do_error)
+  delay.delay_effect(init_error(1))
   |> delay.run()
   |> should.be_error()
 }
 
 pub fn map_test() {
-  delay.delay_effect(fn() { Ok("Hello") })
+  delay.delay_effect(init_ok("Hello"))
   |> delay.map(fn(x) { Ok(x <> " World!") })
   |> delay.run()
   |> should.be_ok
   |> should.equal("Hello World!")
 
-  delay.delay_effect(fn() { Ok(1) })
+  delay.delay_effect(init_ok(1))
   |> delay.map(fn(x) { Ok(x + 1) })
   |> delay.map(fn(x) { Ok(x * 2) })
   |> delay.run()
@@ -73,28 +86,26 @@ pub fn map_test() {
 }
 
 pub fn flat_map_test() {
-  delay.delay_effect(fn() { Ok("Hello") })
-  |> delay.flat_map(fn(x) {
-    Ok(delay.delay_effect(fn() { Ok(x <> " Again!") }))
-  })
+  delay.delay_effect(init_ok("Hello"))
+  |> delay.flat_map(fn(x) { Ok(delay.delay_effect(init_ok(x <> " Again!"))) })
   |> delay.run()
   |> should.be_ok
   |> should.equal("Hello Again!")
 
-  delay.delay_effect(fn() { Ok("Hello") })
-  |> delay.flat_map(fn(_) { Ok(delay.delay_effect(fn() { Error("shit!") })) })
+  delay.delay_effect(init_ok("Hello"))
+  |> delay.flat_map(do_ok(delay.delay_effect(init_error("shit!"))))
   |> delay.run()
   |> should.be_error
   |> should.equal("shit!")
 
   delay.delay_effect(fn() { Ok("Hello") })
-  |> delay.flat_map(fn(_) { Error(delay.delay_effect(fn() { Ok("Nice!") })) })
+  |> delay.flat_map(do_error(delay.delay_effect(init_ok("Nice!"))))
   |> delay.run()
   |> should.be_error
 }
 
 pub fn short_circuit_on_errors_test() {
-  delay.delay_effect(do_error)
+  delay.delay_effect(init_error("ERR"))
   |> delay.map(do_panic)
   |> delay.run()
   |> should.be_error
@@ -119,7 +130,7 @@ pub fn retry_test() {
   let write_fail =
     delay.delay_effect(fn() { simplifile.create_file(retry_filename) })
     |> delay.map(fn(_) { simplifile.append("✨", to: retry_filename) })
-    |> delay.map(fn(_) { Error(simplifile.Unknown) })
+    |> delay.map(do_error(simplifile.Unknown))
 
   delay.retry(write_fail, 3, 0)
   |> delay.run()
@@ -129,11 +140,6 @@ pub fn retry_test() {
 
   // only one because subsequent will fail on create
   let assert Ok("✨") = simplifile.read(retry_filename)
-}
-
-@external(erlang, "erlang", "system_time")
-fn system_time() -> Int {
-  0
 }
 
 pub fn retry_with_backoff_test() {
@@ -146,7 +152,7 @@ pub fn retry_with_backoff_test() {
         to: retry_with_backoff_filename,
       )
     })
-    |> delay.map(fn(_) { Error(simplifile.Unknown) })
+    |> delay.map(do_error(simplifile.Unknown))
 
   delay.retry_with_backoff(write_fail, 3)
   |> delay.run()
@@ -161,8 +167,8 @@ pub fn retry_with_backoff_test() {
     |> list.map(fn(v) { int.base_parse(v, 10) })
     |> list.map(should.be_ok)
 
-  should.be_true(x < y)
-  should.be_true(y < z)
+  should.be_true(x <= y)
+  should.be_true(y <= z)
 }
 
 pub fn repeat_test() {
@@ -173,12 +179,12 @@ pub fn repeat_test() {
 
 pub fn fallthrough_test() {
   let p =
-    delay.delay_effect(do_ok)
+    delay.delay_effect(init_ok(1))
     |> delay.map(do_panic)
 
   delay.fallthrough([
     delay.delay_effect(fn() { simplifile.create_file(fallthrough_a_filename) })
-    |> delay.map(fn(_) { Error(simplifile.Unknown) }),
+    |> delay.map(do_error(simplifile.Unknown)),
     delay.delay_effect(fn() { simplifile.create_file(fallthrough_b_filename) }),
     delay.delay_effect(fn() { simplifile.create_file(fallthrough_c_filename) }),
     p,

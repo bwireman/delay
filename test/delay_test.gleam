@@ -37,7 +37,7 @@ fn do_error(v) {
 }
 
 fn do_panic(_) {
-  panic("Shouldn't be called")
+  panic as "Shouldn't be called"
 }
 
 @external(erlang, "erlang", "system_time")

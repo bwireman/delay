@@ -164,6 +164,6 @@ pub fn fallthrough(options: List(Delay(val, err))) -> Result(val, err) {
         Ok(res) -> Ok(res)
         Error(_) -> fallthrough(rest)
       }
-    [] -> panic("Empty list")
+    [] -> panic as "Empty list"
   }
 }

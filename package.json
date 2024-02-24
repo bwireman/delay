@@ -1,0 +1,32 @@
+{
+  "name": "delay-gleam",
+  "version": "0.1.0",
+  "description": "A dead simple data-structure for delaying side effects",
+  "main": "dist/delay.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bwireman/delay"
+  },
+  "homepage": "https://github.com/bwireman/delay#readme",
+  "author": {
+    "name": "Ben Wireman",
+    "url": "http://benwireman.com/"
+  },
+  "bugs": {
+    "url": "https://github.com/bwireman/delay/issues"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "prepublishOnly": "rm -rf dist/ && yarn esbuild --bundle build/dev/javascript/delay/delay.mjs --outdir=dist --format=esm --sourcemap"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.1"
+  },
+  "dependencies": {}
+}

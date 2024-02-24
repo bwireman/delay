@@ -1,6 +1,6 @@
 {
   "name": "delay-gleam",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A dead simple data-structure for delaying side effects",
   "main": "dist/delay.js",
   "repository": {

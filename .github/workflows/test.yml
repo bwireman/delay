@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: "20"
       - run: gleam deps download
+      - run: yarn
       - run: ./scripts/build_js.sh
       - run: gleam test --target erlang
       - run: gleam test --target javascript

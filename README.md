@@ -1,6 +1,6 @@
-# Delay
+# Delay ⌚
 
-A dead simple data-structure for delaying side effects. Written in the excellent [gleam ✨](https://gleam.run/) language. Supporting both Erlang & Javascript targets
+A dead simple data-structure for delaying side effects ⌚! Written in the excellent [gleam ✨](https://gleam.run/) language. Supporting both Erlang & Javascript targets
 
 [![test](https://github.com/bwireman/delay/actions/workflows/test.yml/badge.svg)](https://github.com/bwireman/delay/actions/workflows/test.yml)
 [![commits](https://img.shields.io/github/last-commit/bwireman/delay)](https://github.com/bwireman/delay/commit/main)

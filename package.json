@@ -1,8 +1,10 @@
 {
   "name": "delay-gleam",
   "version": "0.1.1",
-  "description": "A dead simple data-structure for delaying side effects",
+  "description": "A dead simple data-structure for delaying side effects ⌚!",
   "main": "dist/delay.js",
+  "type": "module",
+  "types": "dist/delay.d.mts",
   "repository": {
     "type": "git",
     "url": "https://github.com/bwireman/delay"
@@ -23,10 +25,18 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "prepublishOnly": "rm -rf dist/ && yarn esbuild --bundle build/dev/javascript/delay/delay.mjs --outdir=dist --format=esm --sourcemap"
+    "prepublishOnly": "./scripts/build_js.sh",
+    "test": "./scripts/test.sh"
   },
   "devDependencies": {
-    "esbuild": "^0.20.1"
+    "esbuild": "^0.20.1",
+    "jest": "^29.7.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "keywords": [
+    "gleam",
+    "monad",
+    "effect",
+    "delayed"
+  ]
 }

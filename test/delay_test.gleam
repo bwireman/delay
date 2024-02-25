@@ -20,6 +20,10 @@ const retry_with_backoff_filename = "test/side_effects/retry_with_backof.test"
 
 const repeat_filename = "test/side_effects/repeat.test"
 
+const every_a_filename = "test/side_effects/every_a.test"
+
+const every_b_filename = "test/side_effects/every_b.test"
+
 fn init_ok(v) {
   fn() { Ok(v) }
 }
@@ -55,6 +59,8 @@ pub fn main() {
       retry_filename,
       repeat_filename,
       retry_with_backoff_filename,
+      every_a_filename,
+      every_b_filename,
     ])
 
   gleeunit.main()
@@ -195,4 +201,47 @@ pub fn fallthrough_test() {
   let assert Ok(_) = simplifile.read(fallthrough_a_filename)
   let assert Ok(_) = simplifile.read(fallthrough_b_filename)
   let assert Error(simplifile.Enoent) = simplifile.read(fallthrough_c_filename)
+}
+
+pub fn every_test() {
+  let a = delay.delay_effect(init_ok("Nice"))
+
+  delay.every([a, a, a])
+  |> list.map(should.be_ok)
+
+  let b = delay.delay_effect(init_error("shit..."))
+  delay.every([b, b, b])
+  |> list.map(should.be_error)
+}
+
+pub fn every_attempts_all_effects_test() {
+  let da = delay.delay_effect(fn() { simplifile.create_file(every_a_filename) })
+  let db = delay.delay_effect(fn() { simplifile.create_file(every_b_filename) })
+  let assert [Error(_), Error(_), Ok(_), Ok(_)] = delay.every([da, db, da, db])
+}
+
+pub fn all_test() {
+  let a = delay.delay_effect(init_ok("Nice"))
+  delay.all([a, a, a])
+  |> should.be_true()
+
+  let b = delay.delay_effect(init_error("shit..."))
+  delay.all([b, b, b])
+  |> should.be_false()
+
+  delay.all([a, b, a])
+  |> should.be_false()
+}
+
+pub fn any_test() {
+  let a = delay.delay_effect(init_ok("Nice"))
+  delay.any([a, a, a])
+  |> should.be_true()
+
+  let b = delay.delay_effect(init_error("shit..."))
+  delay.any([b, b, b])
+  |> should.be_false()
+
+  delay.any([a, b, a])
+  |> should.be_true()
 }

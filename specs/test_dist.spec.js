@@ -1,6 +1,6 @@
 // smoke tests to establish that the NPM code can be used
 // & works as expected
-import { delay_effect, map, run, repeat, fallthrough } from "../dist/delay"
+import { delay_effect, map, run, repeat, any, fallthrough, all } from "../dist/delay"
 import { Ok, Error, List } from "./prelude.mjs"
 
 test("delay_effect", () => {
@@ -57,6 +57,24 @@ test("repeat", () => {
     expect(res).toStrictEqual([3, 2, 1])
     expect(fin).toBe(3)
 })
+
+test("any & all", () => {
+    let fin = 0
+    const d = delay_effect(() => {
+        if (fin > 1) {
+            return new Ok("ok!")
+        }
+
+        fin += 1
+        return new Error("err!")
+    })
+
+    expect(any(List.fromArray([d, d, d]))).toBe(true)
+    fin = 0
+    expect(all(List.fromArray([d, d, d]))).toBe(false)
+})
+
+
 
 test("fallthrough", () => {
     let fin = 0

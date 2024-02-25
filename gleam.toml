@@ -7,7 +7,10 @@ version = "0.1.2"
 description = "A dead simple data-structure for delaying side effects"
 licences = ["MIT"]
 repository = { type = "github", user = "bwireman", repo = "delay" }
-# links = [{ title = "Website", href = "https://gleam.run" }]
+links = [
+    { title = "NPM", href = "https://www.npmjs.com/package/delay-gleam" },
+    { title = "gleam", href = "https://gleam.run" },
+]
 #
 # For a full reference of all the available options, you can have a look at
 # https://gleam.run/writing-gleam/gleam-toml/. 

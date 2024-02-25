@@ -1,3 +1,6 @@
+import gleam/list
+import gleam/result
+
 pub opaque type Delay(val, error) {
   Continue(fn() -> Result(val, error))
   Stop(error)
@@ -155,9 +158,47 @@ fn do_repeat(
   }
 }
 
+/// run every effect in sequence and get their results
+pub fn every(effects: List(Delay(val, err))) -> List(Result(val, err)) {
+  do_every(effects, [])
+}
+
+/// run all effects in sequence and return True if all succeed
+/// note this will _always_ run _every_ effect
+pub fn all(effects: List(Delay(val, err))) -> Bool {
+  do_every(effects, [])
+  |> result.all()
+  |> result.is_ok()
+}
+
+/// run all effects in sequence and return True if any succeeds
+/// note this is different than `fallthrough/1` because it will _always_ run _every_ effect
+pub fn any(effects: List(Delay(val, err))) -> Bool {
+  do_every(effects, [])
+  |> list.filter(result.is_ok)
+  |> list.length()
+  > 0
+}
+
+fn do_every(
+  effects: List(Delay(val, err)),
+  results: List(Result(val, err)),
+) -> List(Result(val, err)) {
+  case effects {
+    [last] -> [run(last), ..results]
+    [head, ..rest] ->
+      case run(head) {
+        Ok(res) -> do_every(rest, [Ok(res), ..results])
+        Error(err) -> do_every(rest, [Error(err), ..results])
+      }
+    [] -> panic as "Empty list"
+  }
+}
+
 /// attempt multiple Delays until one returns an Ok
-pub fn fallthrough(options: List(Delay(val, err))) -> Result(val, err) {
-  case options {
+/// unlike `any/1` this will short circuit on the first Ok
+pub fn fallthrough(effects: List(Delay(val, err))) -> Result(val, err) {
+  case effects {
     [last] -> run(last)
     [head, ..rest] ->
       case run(head) {

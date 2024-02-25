@@ -70,7 +70,8 @@ pub fn flat_map(
   delayed: Delay(val, error),
   f: fn(val) -> Result(Delay(f_res, error), error),
 ) -> Delay(f_res, error) {
-  map(delayed, f)
+  delayed
+  |> map(f)
   |> flatten
 }
 
@@ -112,12 +113,12 @@ fn do_retry(
 
   case retries {
     n if n <= 1 -> run(delayed)
-    n ->
+    _ ->
       case run(delayed) {
         Ok(res) -> Ok(res)
         Error(_) -> {
           sleep(delay)
-          do_retry(delayed, n - 1, delay, backoff)
+          do_retry(delayed, retries - 1, delay, backoff)
         }
       }
   }
@@ -144,18 +145,9 @@ pub fn repeat(
   delayed: Delay(val, error),
   repitions: Int,
 ) -> List(Result(val, error)) {
-  do_repeat(delayed, repitions, [])
-}
-
-fn do_repeat(
-  delayed: Delay(val, error),
-  repitions: Int,
-  results: List(Result(val, error)),
-) -> List(Result(val, error)) {
-  case repitions {
-    0 -> results
-    _ -> do_repeat(delayed, repitions - 1, [run(delayed), ..results])
-  }
+  delayed
+  |> list.repeat(repitions)
+  |> every
 }
 
 /// run every effect in sequence and get their results
@@ -166,7 +158,8 @@ pub fn every(effects: List(Delay(val, err))) -> List(Result(val, err)) {
 /// run all effects in sequence and return True if all succeed
 /// note this will _always_ run _every_ effect
 pub fn all(effects: List(Delay(val, err))) -> Bool {
-  do_every(effects, [])
+  effects
+  |> do_every([])
   |> result.all()
   |> result.is_ok()
 }
@@ -174,7 +167,8 @@ pub fn all(effects: List(Delay(val, err))) -> Bool {
 /// run all effects in sequence and return True if any succeeds
 /// note this is different than `fallthrough/1` because it will _always_ run _every_ effect
 pub fn any(effects: List(Delay(val, err))) -> Bool {
-  do_every(effects, [])
+  effects
+  |> do_every([])
   |> list.filter(result.is_ok)
   |> list.length()
   > 0
@@ -186,11 +180,7 @@ fn do_every(
 ) -> List(Result(val, err)) {
   case effects {
     [last] -> [run(last), ..results]
-    [head, ..rest] ->
-      case run(head) {
-        Ok(res) -> do_every(rest, [Ok(res), ..results])
-        Error(err) -> do_every(rest, [Error(err), ..results])
-      }
+    [head, ..rest] -> do_every(rest, [run(head), ..results])
     [] -> panic as "Empty list"
   }
 }
@@ -198,6 +188,11 @@ fn do_every(
 /// attempt multiple Delays until one returns an Ok
 /// unlike `any/1` this will short circuit on the first Ok
 pub fn fallthrough(effects: List(Delay(val, err))) -> Result(val, err) {
+  do_fallthrough(effects)
+}
+
+// exists to keep the exposed fallthrough functions paramter names the same in JS
+fn do_fallthrough(effects: List(Delay(val, err))) -> Result(val, err) {
   case effects {
     [last] -> run(last)
     [head, ..rest] ->

@@ -24,7 +24,6 @@ fi
 function publish {
     gleam clean
     gleam build --target erlang
-    gleam build --target javascript
     ./scripts/build_js.sh
     ./scripts/test.sh
     echo "Tagging" "$VER"

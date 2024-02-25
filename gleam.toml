@@ -10,6 +10,7 @@ repository = { type = "github", user = "bwireman", repo = "delay" }
 links = [
     { title = "NPM", href = "https://www.npmjs.com/package/delay-gleam" },
     { title = "gleam", href = "https://gleam.run" },
+    { title = "gleam JS prelude", href = "https://github.com/gleam-lang/gleam/blob/v0.34.1/compiler-core/templates/prelude.mjs" },
 ]
 #
 # For a full reference of all the available options, you can have a look at

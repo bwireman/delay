@@ -2,8 +2,8 @@ import gleam/list
 import gleam/result
 
 pub opaque type Delay(val, error) {
-  Continue(fn() -> Result(val, error))
-  Stop(error)
+  Continue(effect: fn() -> Result(val, error))
+  Stop(err: error)
 }
 
 /// store an effect to be run later

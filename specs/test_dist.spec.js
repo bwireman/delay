@@ -1,6 +1,7 @@
 // smoke tests to establish that the NPM code can be used
 // & works as expected
 import { delay_effect, map, run, repeat, fallthrough, every, any, all } from "../dist/delay"
+import { expect, test } from '@jest/globals';
 import { Ok, Error, List } from "./prelude.mjs"
 
 test("delay_effect", () => {
@@ -71,14 +72,14 @@ test("every, any & all", () => {
 
     const res = every(List.fromArray([d, d, d]))
         .toArray()
-    
+
     expect(res[0].isOk()).toBe(true)
     expect(res[1].isOk()).toBe(false)
     expect(res[2].isOk()).toBe(false)
-    
+
     fin = 0
     expect(any(List.fromArray([d, d, d]))).toBe(true)
-    
+
     fin = 0
     expect(all(List.fromArray([d, d, d]))).toBe(false)
 })

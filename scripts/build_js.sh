@@ -22,6 +22,7 @@ yarn dets \
     --imports simplifile
 
 # fixup issue in dets around iterator symbol and numbered properties
+# & remove dets module declaration
 cat dist/delay.d.ts.tmp |
     tail -n +2 |
     head -n -1 |

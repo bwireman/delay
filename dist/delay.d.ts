@@ -1,4 +1,4 @@
-export type Delay$<FWX, FWW> = Continue<FWX, FWW> | Stop<FWX>
+export type Delay$<FWW, FWX> = Continue<FWW, FWX> | Stop<FWX>
 
 export function delay_effect<FWY, FWZ>(f: () => Result<FWY, FWZ>): Delay$<FWY, FWZ>
 
@@ -35,7 +35,7 @@ export class CustomType {
   }): this
 }
 
-export class List<T> implements Iterable<T> {
+export class List<T> implements any {
   head: T
   tail: List<T>
   static fromArray<T>(array: Array<T>): List<T>
@@ -83,7 +83,6 @@ export function float64Bits(float: number): Uint8Array
 export class Result<T, E> extends CustomType {
   static isResult(data: unknown): boolean
   isOk(): boolean
-  0: T
 }
 
 export class Ok<T, E> extends Result<T, E> {

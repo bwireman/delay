@@ -19,12 +19,15 @@ yarn dets \
     --files build/dev/javascript/delay/delay.mjs \
     --types build/dev/javascript/delay/delay.d.mts build/dev/javascript/delay/gleam.d.mts build/dev/javascript/prelude.d.mts \
     --out dist/delay.d.ts.tmp \
-    --imports simplifile \
-    --name delay
+    --imports simplifile
 
 # fixup issue in dets around iterator symbol and numbered properties
 cat dist/delay.d.ts.tmp |
+    tail -n +2 |
+    head -n -1 |
     sed 's/\"\[Symbol.iterator\]\"/\[Symbol.iterator\]/g' |
     sed 's/\"\([[:digit:]]\+\)\"/\1/g' >dist/delay.d.ts
 
 rm dist/delay.d.ts.tmp
+
+yarn prettier ./dist --write

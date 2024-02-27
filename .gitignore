@@ -33,4 +33,3 @@ test/side_effects/*.test
 key._
 .vscode/
 node_modules
-dist/

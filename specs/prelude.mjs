@@ -1,4 +1,3 @@
-// copy of Gleam's JS prelude for testing: https://github.com/gleam-lang/gleam/blob/v0.34.1/compiler-core/templates/prelude.mjs
 export class CustomType {
   withFields(fields) {
     let properties = Object.keys(this).map((label) =>
@@ -20,18 +19,28 @@ export class List {
 
   toArray() {
     return [...this];
-  } 
+  }
 
   atLeastLength(desired) {
-    return desired <= this.length;
+    for (let _ of this) {
+      if (desired <= 0) return true;
+      desired--;
+    }
+    return desired <= 0;
   }
 
   hasLength(desired) {
-    return this.length === desired;
+    for (let _ of this) {
+      if (desired <= 0) return false;
+      desired--;
+    }
+    return desired === 0;
   }
 
   countLength() {
-    return this.length
+    let length = 0;
+    for (let _ of this) length++;
+    return length;
   }
 }
 
@@ -57,19 +66,11 @@ class ListIterator {
   }
 }
 
-export class Empty extends List {
-  length = 0
-}
+export class Empty extends List {}
 
 export class NonEmpty extends List {
   constructor(head, tail) {
     super();
-    let len = head ? 1 : 0
-    if (tail) {
-      len += tail.length;
-    }
-
-    this.length = len;
     this.head = head;
     this.tail = tail;
   }
@@ -132,6 +133,9 @@ export function toBitArray(segments) {
   return new BitArray(new Uint8Array(view.buffer));
 }
 
+// TODO: remove after next version
+export const toBitString = toBitArray;
+
 // Derived from this answer https://stackoverflow.com/questions/8482309/converting-javascript-integer-to-byte-array-and-back
 export function sizedInt(int, size) {
   let value = int;
@@ -139,8 +143,7 @@ export function sizedInt(int, size) {
     return new Uint8Array();
   }
   if (size % 8 != 0) {
-    const msg = `Bit arrays must be byte aligned on JavaScript, got size of ${size} bits`;
-    throw new globalThis.Error(msg);
+    throw "Needs to be a byte size" + size;
   }
   const byteArray = new Uint8Array(size / 8);
 

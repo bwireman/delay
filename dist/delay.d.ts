@@ -1,4 +1,4 @@
-export type Delay$<FWW, FWX> = Continue<FWW, FWX> | Stop<FWX>
+export type Delay$<FWW, FWX> = Continue<FWX, FWW> | Stop<FWX>
 
 export function delay_effect<FWY, FWZ>(f: () => Result<FWY, FWZ>): Delay$<FWY, FWZ>
 
@@ -21,7 +21,7 @@ export function drain(delayed: Delay$<any, any>): null
 
 export function every<FZY, FZZ>(effects: List<Delay$<FZY, FZZ>>): List<Result<FZY, FZZ>>
 
-export function repeat<FZR, FZS>(delayed: Delay$<FZR, FZS>, repitions: number): List<Result<FZR, FZS>>
+export function repeat<FZR, FZS>(delayed: Delay$<FZR, FZS>, repetition: number): List<Result<FZR, FZS>>
 
 export function all(effects: List<Delay$<any, any>>): boolean
 

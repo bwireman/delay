@@ -18,8 +18,7 @@ yarn esbuild \
 yarn dets \
     --files build/dev/javascript/delay/delay.mjs \
     --types build/dev/javascript/delay/delay.d.mts build/dev/javascript/delay/gleam.d.mts build/dev/javascript/prelude.d.mts \
-    --out dist/delay.d.ts.tmp \
-    --imports simplifile
+    --out dist/delay.d.ts.tmp
 
 # fixup issue in dets around iterator symbol and numbered properties
 # & remove dets module declaration

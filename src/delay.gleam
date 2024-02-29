@@ -143,10 +143,10 @@ pub fn drain(delayed: Delay(val, error)) -> Nil {
 /// repeat a Delay and return the results in a list 
 pub fn repeat(
   delayed: Delay(val, error),
-  repitions: Int,
+  repetition: Int,
 ) -> List(Result(val, error)) {
   delayed
-  |> list.repeat(repitions)
+  |> list.repeat(repetition)
   |> every
 }
 

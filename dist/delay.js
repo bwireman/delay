@@ -478,9 +478,9 @@ function every(effects) {
   return do_every(effects, toList([]))
 }
 __name(every, "every")
-function repeat2(delayed, repitions) {
+function repeat2(delayed, repetition) {
   let _pipe = delayed
-  let _pipe$1 = repeat(_pipe, repitions)
+  let _pipe$1 = repeat(_pipe, repetition)
   return every(_pipe$1)
 }
 __name(repeat2, "repeat")

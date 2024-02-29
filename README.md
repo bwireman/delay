@@ -8,17 +8,18 @@ A dead simple data-structure for delaying side effects ⌚! Written in the excel
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](http://makeapullrequest.com)
 [![0.2.0](https://img.shields.io/hexpm/v/delay?color=brightgreen&style=flat)](https://hexdocs.pm/delay/index.html)
 [![gleam erlang](https://img.shields.io/badge/erlang%20%E2%98%8E%EF%B8%8F-red?style=flat&label=gleam%20%E2%9C%A8)](https://gleam.run)
-[![downloads](https://img.shields.io/hexpm/dt/delay?color=brightgreen)](https://hex.pm/packages/delay/)
+[![hex.pm downloads](https://img.shields.io/hexpm/dt/delay?label=hex.pm%20downloads)](https://hex.pm/packages/delay/)
 [![gleam js](https://img.shields.io/badge/%20gleam%20%E2%9C%A8-js%20%F0%9F%8C%B8-yellow)](https://gleam.run/news/v0.16-gleam-compiles-to-javascript/)
-[![npm](https://img.shields.io/npm/dt/delay-gleam)](https://www.npmjs.com/package/delay-gleam)
+[![npm](https://img.shields.io/npm/dt/delay-gleam?label=npm%20downloads)](https://www.npmjs.com/package/delay-gleam)
 
 
 ## Basic Usage
 
 ```gleam
 import gleam/io
+import delay
 
-let d = delay_effect(fn() {
+let d = delay.delay_effect(fn() {
   io.println("Hello")
   Ok(1)
 }) |> delay.map(fn(x) {
@@ -37,7 +38,9 @@ let res = delay.run(d)
 The result of `delay_effect` is really just a first class function with a nice API wrapper. It isn't executed until put through one of `run/1`, `drain/1` or `fallthrough/1`. And can be called as many times as you want.
 
 ```gleam
-let d = delay_effect(fn() {
+import delay
+
+let d = delay.delay_effect(fn() {
   io.println("Hello")
   Error("bummer")
 }) |> delay.map(fn(x) {
@@ -57,7 +60,8 @@ Effects can be retried as well via `retry/3`
 ```gleam
 // using the same effect `d` from above
 
-let res = delay.retry(d, 3, 200) |> delay.run()
+let res = delay.retry(d, 3, 200)
+|> delay.run()
 // Hello
 // Hello
 // Hello

@@ -1,33 +1,98 @@
-export type Delay$<FWW, FWX> = Continue<FWX, FWW> | Stop<FWX>
 
-export function delay_effect<FWY, FWZ>(f: () => Result<FWY, FWZ>): Delay$<FWY, FWZ>
+/**
+* Type representing a delayed effect to be lazily evaluated
+*/
+export type Delay$<FXD, FXE> = Continue<FXD, FXE> | Stop<FXE>
 
-export function map<FXE, FXF, FXI>(delayed: Delay$<FXE, FXF>, f: (x0: FXE) => Result<FXI, FXF>): Delay$<FXI, FXF>
 
-export function flatten<FXW, FXX>(delayed: Delay$<Delay$<FXW, FXX>, FXX>): Delay$<FXW, FXX>
+/**
+* store an effect to be run later
+* if `f` returns an Error then chain will stop
+*/
+export function delay_effect<FXF, FXG>(f: () => Result<FXF, FXG>): Delay$<FXF, FXG>
 
-export function flat_map<FYE, FYF, FYI>(
-  delayed: Delay$<FYE, FYF>,
-  f: (x0: FYE) => Result<Delay$<FYI, FYF>, FYF>
-): Delay$<FYI, FYF>
 
-export function run<FZH, FZI>(delayed: Delay$<FZH, FZI>): Result<FZH, FZI>
+/**
+* chains an operation onto an existing delay to be run one then into the next
+* if delayed has already error'd then `f` will be ignored
+*/
+export function map<FXL, FXM, FXP>(delayed: Delay$<FXL, FXM>, f: (x0: FXL) => Result<FXP, FXM>): Delay$<FXP, FXM>
 
-export function retry<FYP, FYQ>(delayed: Delay$<FYP, FYQ>, retries: number, delay: number): Delay$<FYP, FYQ>
 
-export function retry_with_backoff<FYV, FYW>(delayed: Delay$<FYV, FYW>, retries: number): Delay$<FYV, FYW>
+/**
+* flatten nested Delay
+*/
+export function flatten<FYD, FYE>(delayed: Delay$<Delay$<FYD, FYE>, FYE>): Delay$<FYD, FYE>
 
+
+/**
+* map and then flatten Delay
+*/
+export function flat_map<FYL, FYM, FYP>(
+  delayed: Delay$<FYL, FYM>,
+  f: (x0: FYL) => Result<Delay$<FYP, FYM>, FYM>
+): Delay$<FYP, FYM>
+
+
+/**
+* run a delayed effect and get the result
+* short-circuiting if any in the chain returns an Error
+*/
+export function run<FZO, FZP>(delayed: Delay$<FZO, FZP>): Result<FZO, FZP>
+
+
+/**
+* returns a Delay that will be re-attempted `retries` times with `delay` ms in between
+* NOTE: `delay` is ignored in JS
+*/
+export function retry<FYW, FYX>(delayed: Delay$<FYW, FYX>, retries: number, delay: number): Delay$<FYW, FYX>
+
+
+/**
+* returns a Delay that will be re-attempted `retries` times with `delay` ms in between
+* NOTE: `delay` is ignored in JS
+*/
+export function retry_with_backoff<FZC, FZD>(delayed: Delay$<FZC, FZD>, retries: number): Delay$<FZC, FZD>
+
+
+/**
+* run a delayed effect and throw away the result
+* short-circuiting if any in the chain returns an Error
+*/
 export function drain(delayed: Delay$<any, any>): null
 
-export function every<FZY, FZZ>(effects: List<Delay$<FZY, FZZ>>): List<Result<FZY, FZZ>>
 
-export function repeat<FZR, FZS>(delayed: Delay$<FZR, FZS>, repetition: number): List<Result<FZR, FZS>>
+/**
+* run every effect in sequence and get their results
+*/
+export function every<GAF, GAG>(effects: List<Delay$<GAF, GAG>>): List<Result<GAF, GAG>>
 
+
+/**
+* repeat a Delay and return the results in a list
+*/
+export function repeat<FZY, FZZ>(delayed: Delay$<FZY, FZZ>, repetition: number): List<Result<FZY, FZZ>>
+
+
+/**
+* run all effects in sequence and return True if all succeed
+* note this will _always_ run _every_ effect
+*/
 export function all(effects: List<Delay$<any, any>>): boolean
 
+
+/**
+* run all effects in sequence and return True if any succeeds
+* note this is different than `fallthrough/1` because it will _always_ run _every_ effect
+*/
 export function any(effects: List<Delay$<any, any>>): boolean
 
-export function fallthrough<GBB, GBC>(effects: List<Delay$<GBB, GBC>>): Result<GBB, GBC>
+
+/**
+* attempt multiple Delays until one returns an Ok
+* unlike `any/1` this will short circuit on the first Ok
+*/
+export function fallthrough<GBI, GBJ>(effects: List<Delay$<GBI, GBJ>>): Result<GBI, GBJ>
 
 export class CustomType {
   withFields<K extends keyof this>(fields: {
@@ -103,12 +168,12 @@ export function divideInt(a: number, b: number): number
 
 export function divideFloat(a: number, b: number): number
 
-export class Continue<FWW, FWX> extends CustomType {
+export class Continue<FXD, FXE> extends CustomType {
   constructor(effect: () => Result<any, any>)
   effect(): Result<any, any>
 }
 
-export class Stop<FWX> extends CustomType {
-  constructor(err: FWX)
-  err: FWX
+export class Stop<FXE> extends CustomType {
+  constructor(err: FXE)
+  err: FXE
 }

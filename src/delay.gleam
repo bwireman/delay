@@ -1,6 +1,7 @@
 import gleam/list
 import gleam/result
 
+/// Type representing a delayed effect to be lazily evaluated
 pub opaque type Delay(val, error) {
   Continue(effect: fn() -> Result(val, error))
   Stop(err: error)
@@ -159,7 +160,7 @@ pub fn every(effects: List(Delay(val, err))) -> List(Result(val, err)) {
 /// note this will _always_ run _every_ effect
 pub fn all(effects: List(Delay(val, err))) -> Bool {
   effects
-  |> do_every([])
+  |> every()
   |> result.all()
   |> result.is_ok()
 }
@@ -168,7 +169,7 @@ pub fn all(effects: List(Delay(val, err))) -> Bool {
 /// note this is different than `fallthrough/1` because it will _always_ run _every_ effect
 pub fn any(effects: List(Delay(val, err))) -> Bool {
   effects
-  |> do_every([])
+  |> every()
   |> list.filter(result.is_ok)
   |> list.length()
   > 0

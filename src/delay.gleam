@@ -1,7 +1,7 @@
 import gleam/list
 import gleam/result
 
-/// Type representing a delayed effect to be lazyily evaluated
+/// Type representing a delayed effect to be lazily evaluated
 pub opaque type Delay(val, error) {
   Continue(effect: fn() -> Result(val, error))
   Stop(err: error)

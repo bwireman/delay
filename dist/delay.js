@@ -322,7 +322,7 @@ function chain(delayed_f, f) {
       let err = $[0]
       return new Error2(err)
     } else {
-      throw makeError("case_no_match", "delay", 35, "", "No case clause matched", { values: [$] })
+      throw makeError("case_no_match", "delay", 36, "", "No case clause matched", { values: [$] })
     }
   }
 }
@@ -336,7 +336,7 @@ function map3(delayed, f) {
     let err = delayed.err
     return new Stop(err)
   } else {
-    throw makeError("case_no_match", "delay", 21, "map", "No case clause matched", { values: [delayed] })
+    throw makeError("case_no_match", "delay", 22, "map", "No case clause matched", { values: [delayed] })
   }
 }
 __name(map3, "map")
@@ -354,7 +354,7 @@ function flatten(delayed) {
             let err = $[0]
             return new Stop(err)
           } else {
-            throw makeError("case_no_match", "delay", 51, "", "No case clause matched", { values: [$] })
+            throw makeError("case_no_match", "delay", 52, "", "No case clause matched", { values: [$] })
           }
         })()
         if (inner instanceof Continue) {
@@ -364,7 +364,7 @@ function flatten(delayed) {
           let err = inner.err
           return new Error2(err)
         } else {
-          throw makeError("case_no_match", "delay", 56, "", "No case clause matched", { values: [inner] })
+          throw makeError("case_no_match", "delay", 57, "", "No case clause matched", { values: [inner] })
         }
       }
     } else if (delayed instanceof Stop) {
@@ -373,7 +373,7 @@ function flatten(delayed) {
         return new Error2(err)
       }
     } else {
-      throw makeError("case_no_match", "delay", 46, "flatten", "No case clause matched", { values: [delayed] })
+      throw makeError("case_no_match", "delay", 47, "flatten", "No case clause matched", { values: [delayed] })
     }
   })()
   return delay_effect(_pipe)
@@ -397,7 +397,7 @@ function run(delayed) {
     let err = delayed.err
     return new Error2(err)
   } else {
-    throw makeError("case_no_match", "delay", 130, "run", "No case clause matched", { values: [delayed] })
+    throw makeError("case_no_match", "delay", 131, "run", "No case clause matched", { values: [delayed] })
   }
 }
 __name(run, "run")
@@ -413,7 +413,7 @@ function do_retry(loop$delayed, loop$retries, loop$delay, loop$backoff) {
       } else if (!backoff) {
         return delay
       } else {
-        throw makeError("case_no_match", "delay", 109, "do_retry", "No case clause matched", { values: [backoff] })
+        throw makeError("case_no_match", "delay", 110, "do_retry", "No case clause matched", { values: [backoff] })
       }
     })()
     if (retries <= 1) {
@@ -431,7 +431,7 @@ function do_retry(loop$delayed, loop$retries, loop$delay, loop$backoff) {
         loop$delay = delay$1
         loop$backoff = backoff
       } else {
-        throw makeError("case_no_match", "delay", 117, "do_retry", "No case clause matched", { values: [$] })
+        throw makeError("case_no_match", "delay", 118, "do_retry", "No case clause matched", { values: [$] })
       }
     }
   }
@@ -467,9 +467,9 @@ function do_every(loop$effects, loop$results) {
       loop$effects = rest
       loop$results = toList([run(head)], results)
     } else if (effects.hasLength(0)) {
-      throw makeError("todo", "delay", 184, "do_every", "Empty list", {})
+      throw makeError("todo", "delay", 185, "do_every", "Empty list", {})
     } else {
-      throw makeError("case_no_match", "delay", 181, "do_every", "No case clause matched", { values: [effects] })
+      throw makeError("case_no_match", "delay", 182, "do_every", "No case clause matched", { values: [effects] })
     }
   }
 }
@@ -486,7 +486,7 @@ function repeat2(delayed, repetition) {
 __name(repeat2, "repeat")
 function all2(effects) {
   let _pipe = effects
-  let _pipe$1 = do_every(_pipe, toList([]))
+  let _pipe$1 = every(_pipe)
   let _pipe$2 = all(_pipe$1)
   return is_ok(_pipe$2)
 }
@@ -495,7 +495,7 @@ function any(effects) {
   return (
     (() => {
       let _pipe = effects
-      let _pipe$1 = do_every(_pipe, toList([]))
+      let _pipe$1 = every(_pipe)
       let _pipe$2 = filter(_pipe$1, is_ok)
       return length2(_pipe$2)
     })() > 0
@@ -516,12 +516,12 @@ function do_fallthrough(effects) {
     } else if (!$.isOk()) {
       return fallthrough(rest)
     } else {
-      throw makeError("case_no_match", "delay", 199, "do_fallthrough", "No case clause matched", { values: [$] })
+      throw makeError("case_no_match", "delay", 200, "do_fallthrough", "No case clause matched", { values: [$] })
     }
   } else if (effects.hasLength(0)) {
-    throw makeError("todo", "delay", 203, "do_fallthrough", "Empty list", {})
+    throw makeError("todo", "delay", 204, "do_fallthrough", "Empty list", {})
   } else {
-    throw makeError("case_no_match", "delay", 196, "do_fallthrough", "No case clause matched", { values: [effects] })
+    throw makeError("case_no_match", "delay", 197, "do_fallthrough", "No case clause matched", { values: [effects] })
   }
 }
 __name(do_fallthrough, "do_fallthrough")

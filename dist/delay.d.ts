@@ -1,33 +1,33 @@
-export type Delay$<FWW, FWX> = Continue<FWX, FWW> | Stop<FWX>
+export type Delay$<FXD, FXE> = Continue<FXE, FXD> | Stop<FXE>
 
-export function delay_effect<FWY, FWZ>(f: () => Result<FWY, FWZ>): Delay$<FWY, FWZ>
+export function delay_effect<FXF, FXG>(f: () => Result<FXF, FXG>): Delay$<FXF, FXG>
 
-export function map<FXE, FXF, FXI>(delayed: Delay$<FXE, FXF>, f: (x0: FXE) => Result<FXI, FXF>): Delay$<FXI, FXF>
+export function map<FXL, FXM, FXP>(delayed: Delay$<FXL, FXM>, f: (x0: FXL) => Result<FXP, FXM>): Delay$<FXP, FXM>
 
-export function flatten<FXW, FXX>(delayed: Delay$<Delay$<FXW, FXX>, FXX>): Delay$<FXW, FXX>
+export function flatten<FYD, FYE>(delayed: Delay$<Delay$<FYD, FYE>, FYE>): Delay$<FYD, FYE>
 
-export function flat_map<FYE, FYF, FYI>(
-  delayed: Delay$<FYE, FYF>,
-  f: (x0: FYE) => Result<Delay$<FYI, FYF>, FYF>
-): Delay$<FYI, FYF>
+export function flat_map<FYL, FYM, FYP>(
+  delayed: Delay$<FYL, FYM>,
+  f: (x0: FYL) => Result<Delay$<FYP, FYM>, FYM>
+): Delay$<FYP, FYM>
 
-export function run<FZH, FZI>(delayed: Delay$<FZH, FZI>): Result<FZH, FZI>
+export function run<FZO, FZP>(delayed: Delay$<FZO, FZP>): Result<FZO, FZP>
 
-export function retry<FYP, FYQ>(delayed: Delay$<FYP, FYQ>, retries: number, delay: number): Delay$<FYP, FYQ>
+export function retry<FYW, FYX>(delayed: Delay$<FYW, FYX>, retries: number, delay: number): Delay$<FYW, FYX>
 
-export function retry_with_backoff<FYV, FYW>(delayed: Delay$<FYV, FYW>, retries: number): Delay$<FYV, FYW>
+export function retry_with_backoff<FZC, FZD>(delayed: Delay$<FZC, FZD>, retries: number): Delay$<FZC, FZD>
 
 export function drain(delayed: Delay$<any, any>): null
 
-export function every<FZY, FZZ>(effects: List<Delay$<FZY, FZZ>>): List<Result<FZY, FZZ>>
+export function every<GAF, GAG>(effects: List<Delay$<GAF, GAG>>): List<Result<GAF, GAG>>
 
-export function repeat<FZR, FZS>(delayed: Delay$<FZR, FZS>, repetition: number): List<Result<FZR, FZS>>
+export function repeat<FZY, FZZ>(delayed: Delay$<FZY, FZZ>, repetition: number): List<Result<FZY, FZZ>>
 
 export function all(effects: List<Delay$<any, any>>): boolean
 
 export function any(effects: List<Delay$<any, any>>): boolean
 
-export function fallthrough<GBB, GBC>(effects: List<Delay$<GBB, GBC>>): Result<GBB, GBC>
+export function fallthrough<GBI, GBJ>(effects: List<Delay$<GBI, GBJ>>): Result<GBI, GBJ>
 
 export class CustomType {
   withFields<K extends keyof this>(fields: {
@@ -103,12 +103,12 @@ export function divideInt(a: number, b: number): number
 
 export function divideFloat(a: number, b: number): number
 
-export class Continue<FWW, FWX> extends CustomType {
+export class Continue<FXE, FXD> extends CustomType {
   constructor(effect: () => Result<any, any>)
   effect(): Result<any, any>
 }
 
-export class Stop<FWX> extends CustomType {
-  constructor(err: FWX)
-  err: FWX
+export class Stop<FXE> extends CustomType {
+  constructor(err: FXE)
+  err: FXE
 }

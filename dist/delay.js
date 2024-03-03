@@ -1,3 +1,6 @@
+//Code for `delay-gleam` Generated using Gleam & Esbuild
+//https://www.npmjs.com/package/delay-gleam
+//https://github.com/bwireman/delay
 var __defProp = Object.defineProperty
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true })
 
@@ -308,6 +311,11 @@ var Stop = class extends CustomType {
     this.err = err
   }
 }
+
+/**
+ * store an effect to be run later
+ * if `f` returns an Error then chain will stop
+ */
 function delay_effect(f) {
   return new Continue(f)
 }
@@ -327,6 +335,11 @@ function chain(delayed_f, f) {
   }
 }
 __name(chain, "chain")
+
+/**
+ * chains an operation onto an existing delay to be run one then into the next
+ * if delayed has already error'd then `f` will be ignored
+ */
 function map3(delayed, f) {
   if (delayed instanceof Continue) {
     let delayed_f = delayed.effect
@@ -340,6 +353,10 @@ function map3(delayed, f) {
   }
 }
 __name(map3, "map")
+
+/**
+ * flatten nested Delay
+ */
 function flatten(delayed) {
   let _pipe = (() => {
     if (delayed instanceof Continue) {
@@ -379,6 +396,10 @@ function flatten(delayed) {
   return delay_effect(_pipe)
 }
 __name(flatten, "flatten")
+
+/**
+ * map and then flatten Delay
+ */
 function flat_map(delayed, f) {
   let _pipe = delayed
   let _pipe$1 = map3(_pipe, f)
@@ -389,6 +410,11 @@ function sleep(_) {
   return void 0
 }
 __name(sleep, "sleep")
+
+/**
+ * run a delayed effect and get the result
+ * short-circuiting if any in the chain returns an Error
+ */
 function run(delayed) {
   if (delayed instanceof Continue) {
     let f = delayed.effect
@@ -437,18 +463,33 @@ function do_retry(loop$delayed, loop$retries, loop$delay, loop$backoff) {
   }
 }
 __name(do_retry, "do_retry")
+
+/**
+ * returns a Delay that will be re-attempted `retries` times with `delay` ms in between
+ * NOTE: `delay` is ignored in JS
+ */
 function retry(delayed, retries, delay) {
   return delay_effect(() => {
     return do_retry(delayed, retries, delay, false)
   })
 }
 __name(retry, "retry")
+
+/**
+ * returns a Delay that will be re-attempted `retries` times with `delay` ms in between
+ * NOTE: `delay` is ignored in JS
+ */
 function retry_with_backoff(delayed, retries) {
   return delay_effect(() => {
     return do_retry(delayed, retries, 0, true)
   })
 }
 __name(retry_with_backoff, "retry_with_backoff")
+
+/**
+ * run a delayed effect and throw away the result
+ * short-circuiting if any in the chain returns an Error
+ */
 function drain(delayed) {
   let $ = run(delayed)
   return void 0
@@ -474,16 +515,29 @@ function do_every(loop$effects, loop$results) {
   }
 }
 __name(do_every, "do_every")
+
+/**
+ * run every effect in sequence and get their results
+ */
 function every(effects) {
   return do_every(effects, toList([]))
 }
 __name(every, "every")
+
+/**
+ * repeat a Delay and return the results in a list
+ */
 function repeat2(delayed, repetition) {
   let _pipe = delayed
   let _pipe$1 = repeat(_pipe, repetition)
   return every(_pipe$1)
 }
 __name(repeat2, "repeat")
+
+/**
+ * run all effects in sequence and return True if all succeed
+ * note this will _always_ run _every_ effect
+ */
 function all2(effects) {
   let _pipe = effects
   let _pipe$1 = every(_pipe)
@@ -491,6 +545,11 @@ function all2(effects) {
   return is_ok(_pipe$2)
 }
 __name(all2, "all")
+
+/**
+ * run all effects in sequence and return True if any succeeds
+ * note this is different than `fallthrough/1` because it will _always_ run _every_ effect
+ */
 function any(effects) {
   return (
     (() => {
@@ -525,6 +584,11 @@ function do_fallthrough(effects) {
   }
 }
 __name(do_fallthrough, "do_fallthrough")
+
+/**
+ * attempt multiple Delays until one returns an Ok
+ * unlike `any/1` this will short circuit on the first Ok
+ */
 function fallthrough(effects) {
   return do_fallthrough(effects)
 }

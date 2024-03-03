@@ -2,7 +2,7 @@
 /**
 * Type representing a delayed effect to be lazily evaluated
 */
-export type Delay$<FXE, FXD> = Continue<FXE, FXD> | Stop<FXE>
+export type Delay$<FXD, FXE> = Continue<FXD, FXE> | Stop<FXE>
 
 
 /**
@@ -168,7 +168,7 @@ export function divideInt(a: number, b: number): number
 
 export function divideFloat(a: number, b: number): number
 
-export class Continue<FXE, FXD> extends CustomType {
+export class Continue<FXD, FXE> extends CustomType {
   constructor(effect: () => Result<any, any>)
   effect(): Result<any, any>
 }
@@ -177,4 +177,3 @@ export class Stop<FXE> extends CustomType {
   constructor(err: FXE)
   err: FXE
 }
-

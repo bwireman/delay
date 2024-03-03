@@ -1,12 +1,11 @@
 // smoke tests to establish that the NPM code can be used
 // & works as expected
 import { delay_effect, map, run, repeat, fallthrough, every, any, all } from "../dist/delay"
-import type { Ok, Error } from "../dist/delay"
 import { expect, test } from 'vitest'
 import * as pre from "./prelude.mjs"
 
-const ok = <T, E>(v: T): Ok<T, E> => new pre.Ok(v)
-const err = <T, E>(v: E): Error<T, E> => new pre.Error(v)
+const ok = (v)=> new pre.Ok(v)
+const err = (v) => new pre.Error(v)
 
 test("delay_effect", () => {
     let fin = 0

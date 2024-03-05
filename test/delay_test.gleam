@@ -190,7 +190,7 @@ pub fn fallthrough_test() {
 
   delay.fallthrough([
     delay.delay_effect(fn() { simplifile.create_file(fallthrough_a_filename) })
-    |> delay.map(do_error(simplifile.Unknown)),
+      |> delay.map(do_error(simplifile.Unknown)),
     delay.delay_effect(fn() { simplifile.create_file(fallthrough_b_filename) }),
     delay.delay_effect(fn() { simplifile.create_file(fallthrough_c_filename) }),
     p,

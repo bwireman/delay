@@ -71,7 +71,7 @@ let res = delay.retry(d, 3, 200)
 
 ## Usage within Javascript 🌸 directly
 If you want to use this library from javascript alone, but aren't ready to embrace gleam, you can install it from [npm](https://www.npmjs.com/package/delay-gleam)!
-You will need a copy of Gleam's [JS prelude](https://github.com/gleam-lang/gleam/blob/v0.34.1/compiler-core/templates/prelude.mjs) as well. Docs can be found [here](https://hexdocs.pm/delay/index.html)
+You will need a copy of Gleam's [JS prelude](https://github.com/gleam-lang/gleam/blob/v1.0.0/compiler-core/templates/prelude.mjs) as well. Docs can be found [here](https://hexdocs.pm/delay/index.html)
 
 ```sh
 npm i delay-gleam

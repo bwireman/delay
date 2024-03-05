@@ -28,6 +28,7 @@ var List = class {
   toArray() {
     return [...this]
   }
+  // @internal
   atLeastLength(desired) {
     for (let _ of this) {
       if (desired <= 0) return true
@@ -35,6 +36,7 @@ var List = class {
     }
     return desired <= 0
   }
+  // @internal
   hasLength(desired) {
     for (let _ of this) {
       if (desired <= 0) return false
@@ -89,6 +91,7 @@ var Result = class _Result extends CustomType {
   static {
     __name(this, "Result")
   }
+  // @internal
   static isResult(data) {
     return data instanceof _Result
   }
@@ -101,6 +104,7 @@ var Ok = class extends Result {
     super()
     this[0] = value
   }
+  // @internal
   isOk() {
     return true
   }
@@ -113,6 +117,7 @@ var Error2 = class extends Result {
     super()
     this[0] = detail
   }
+  // @internal
   isOk() {
     return false
   }
@@ -132,10 +137,8 @@ __name(makeError, "makeError")
 function is_ok(result) {
   if (!result.isOk()) {
     return false
-  } else if (result.isOk()) {
-    return true
   } else {
-    throw makeError("case_no_match", "gleam/result", 21, "is_ok", "No case clause matched", { values: [result] })
+    return true
   }
 }
 __name(is_ok, "is_ok")
@@ -183,15 +186,11 @@ function do_reverse_acc(loop$remaining, loop$accumulator) {
     let accumulator = loop$accumulator
     if (remaining.hasLength(0)) {
       return accumulator
-    } else if (remaining.atLeastLength(1)) {
+    } else {
       let item = remaining.head
       let rest$1 = remaining.tail
       loop$remaining = rest$1
       loop$accumulator = toList([item], accumulator)
-    } else {
-      throw makeError("case_no_match", "gleam/list", 124, "do_reverse_acc", "No case clause matched", {
-        values: [remaining]
-      })
     }
   }
 }
@@ -211,24 +210,20 @@ function do_filter(loop$list, loop$fun, loop$acc) {
     let acc = loop$acc
     if (list.hasLength(0)) {
       return reverse(acc)
-    } else if (list.atLeastLength(1)) {
+    } else {
       let x = list.head
       let xs = list.tail
       let new_acc = (() => {
         let $ = fun(x)
         if ($) {
           return toList([x], acc)
-        } else if (!$) {
-          return acc
         } else {
-          throw makeError("case_no_match", "gleam/list", 300, "do_filter", "No case clause matched", { values: [$] })
+          return acc
         }
       })()
       loop$list = xs
       loop$fun = fun
       loop$acc = new_acc
-    } else {
-      throw makeError("case_no_match", "gleam/list", 297, "do_filter", "No case clause matched", { values: [list] })
     }
   }
 }
@@ -244,7 +239,7 @@ function do_try_map(loop$list, loop$fun, loop$acc) {
     let acc = loop$acc
     if (list.hasLength(0)) {
       return new Ok(reverse(acc))
-    } else if (list.atLeastLength(1)) {
+    } else {
       let x = list.head
       let xs = list.tail
       let $ = fun(x)
@@ -253,14 +248,10 @@ function do_try_map(loop$list, loop$fun, loop$acc) {
         loop$list = xs
         loop$fun = fun
         loop$acc = toList([y], acc)
-      } else if (!$.isOk()) {
+      } else {
         let error = $[0]
         return new Error2(error)
-      } else {
-        throw makeError("case_no_match", "gleam/list", 487, "do_try_map", "No case clause matched", { values: [$] })
       }
-    } else {
-      throw makeError("case_no_match", "gleam/list", 484, "do_try_map", "No case clause matched", { values: [list] })
     }
   }
 }
@@ -277,12 +268,10 @@ function do_repeat(loop$a, loop$times, loop$acc) {
     let $ = times <= 0
     if ($) {
       return acc
-    } else if (!$) {
+    } else {
       loop$a = a
       loop$times = times - 1
       loop$acc = toList([a], acc)
-    } else {
-      throw makeError("case_no_match", "gleam/list", 1323, "do_repeat", "No case clause matched", { values: [$] })
     }
   }
 }
@@ -326,11 +315,9 @@ function chain(delayed_f, f) {
     if ($.isOk()) {
       let value = $[0]
       return f(value)
-    } else if (!$.isOk()) {
+    } else {
       let err = $[0]
       return new Error2(err)
-    } else {
-      throw makeError("case_no_match", "delay", 36, "", "No case clause matched", { values: [$] })
     }
   }
 }
@@ -345,11 +332,9 @@ function map3(delayed, f) {
     let delayed_f = delayed.effect
     let _pipe = chain(delayed_f, f)
     return delay_effect(_pipe)
-  } else if (delayed instanceof Stop) {
+  } else {
     let err = delayed.err
     return new Stop(err)
-  } else {
-    throw makeError("case_no_match", "delay", 22, "map", "No case clause matched", { values: [delayed] })
   }
 }
 __name(map3, "map")
@@ -367,30 +352,24 @@ function flatten(delayed) {
           if ($.isOk()) {
             let inner_delay = $[0]
             return inner_delay
-          } else if (!$.isOk()) {
+          } else {
             let err = $[0]
             return new Stop(err)
-          } else {
-            throw makeError("case_no_match", "delay", 52, "", "No case clause matched", { values: [$] })
           }
         })()
         if (inner instanceof Continue) {
           let inner_f = inner.effect
           return inner_f()
-        } else if (inner instanceof Stop) {
+        } else {
           let err = inner.err
           return new Error2(err)
-        } else {
-          throw makeError("case_no_match", "delay", 57, "", "No case clause matched", { values: [inner] })
         }
       }
-    } else if (delayed instanceof Stop) {
+    } else {
       let err = delayed.err
       return () => {
         return new Error2(err)
       }
-    } else {
-      throw makeError("case_no_match", "delay", 47, "flatten", "No case clause matched", { values: [delayed] })
     }
   })()
   return delay_effect(_pipe)
@@ -419,11 +398,9 @@ function run(delayed) {
   if (delayed instanceof Continue) {
     let f = delayed.effect
     return f()
-  } else if (delayed instanceof Stop) {
+  } else {
     let err = delayed.err
     return new Error2(err)
-  } else {
-    throw makeError("case_no_match", "delay", 131, "run", "No case clause matched", { values: [delayed] })
   }
 }
 __name(run, "run")
@@ -436,10 +413,8 @@ function do_retry(loop$delayed, loop$retries, loop$delay, loop$backoff) {
     let delay$1 = (() => {
       if (backoff) {
         return delay + 1e3
-      } else if (!backoff) {
-        return delay
       } else {
-        throw makeError("case_no_match", "delay", 110, "do_retry", "No case clause matched", { values: [backoff] })
+        return delay
       }
     })()
     if (retries <= 1) {
@@ -450,14 +425,12 @@ function do_retry(loop$delayed, loop$retries, loop$delay, loop$backoff) {
       if ($.isOk()) {
         let res = $[0]
         return new Ok(res)
-      } else if (!$.isOk()) {
+      } else {
         sleep(delay$1)
         loop$delayed = delayed
         loop$retries = retries - 1
         loop$delay = delay$1
         loop$backoff = backoff
-      } else {
-        throw makeError("case_no_match", "delay", 118, "do_retry", "No case clause matched", { values: [$] })
       }
     }
   }
@@ -507,10 +480,8 @@ function do_every(loop$effects, loop$results) {
       let rest = effects.tail
       loop$effects = rest
       loop$results = toList([run(head)], results)
-    } else if (effects.hasLength(0)) {
-      throw makeError("todo", "delay", 185, "do_every", "Empty list", {})
     } else {
-      throw makeError("case_no_match", "delay", 182, "do_every", "No case clause matched", { values: [effects] })
+      throw makeError("todo", "delay", 185, "do_every", "Empty list", {})
     }
   }
 }
@@ -572,15 +543,11 @@ function do_fallthrough(effects) {
     if ($.isOk()) {
       let res = $[0]
       return new Ok(res)
-    } else if (!$.isOk()) {
-      return fallthrough(rest)
     } else {
-      throw makeError("case_no_match", "delay", 200, "do_fallthrough", "No case clause matched", { values: [$] })
+      return fallthrough(rest)
     }
-  } else if (effects.hasLength(0)) {
-    throw makeError("todo", "delay", 204, "do_fallthrough", "Empty list", {})
   } else {
-    throw makeError("case_no_match", "delay", 197, "do_fallthrough", "No case clause matched", { values: [effects] })
+    throw makeError("todo", "delay", 204, "do_fallthrough", "Empty list", {})
   }
 }
 __name(do_fallthrough, "do_fallthrough")

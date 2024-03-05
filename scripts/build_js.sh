@@ -8,7 +8,7 @@ rm -rf dist/
 gleam build --target javascript
 
 # format input for comments.py
-cat src/delay.gleam | grep pub -B 3 | grep -v "\}" | grep -v import  | sed -E 's/\(.*//g' >  comments.tmp 
+cat src/delay.gleam | grep pub -B 3 | grep -v "\}" | grep -v import | sed -E 's/\(.*//g' >comments.tmp
 
 yarn esbuild \
     --bundle build/dev/javascript/delay/delay.mjs \
@@ -20,7 +20,7 @@ yarn esbuild \
     //https://www.npmjs.com/package/delay-gleam 
     //https://github.com/bwireman/delay'
 
-# comment ./dist/delay.js 
+# comment ./dist/delay.js
 ./scripts/comment.py dist/delay.js 'build/dev/javascript/delay/delay.mjs'
 
 yarn dets \
@@ -38,7 +38,7 @@ cat dist/delay.d.ts.tmp |
 
 yarn prettier ./dist --write
 
-# comment ./dist/delay.d.ts 
+# comment ./dist/delay.d.ts
 ./scripts/comment.py dist/delay.d.ts
 
 rm dist/*.tmp

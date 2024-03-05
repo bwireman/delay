@@ -23,6 +23,7 @@ fi
 
 function publish {
     gleam clean
+    ./scripts/update.sh
     gleam build --target erlang
     ./scripts/build_js.sh
     ./scripts/test.sh

@@ -7,21 +7,20 @@ pub opaque type Delay(val, error) {
   Stop(err: error)
 }
 
-/// store an effect to be run later
-/// if `f` returns an Error then chain will stop 
-pub fn delay_effect(f: fn() -> Result(val, error)) -> Delay(val, error) {
-  Continue(f)
+/// Stores an effect to be run later, short circuiting on errors
+pub fn delay_effect(func: fn() -> Result(val, error)) -> Delay(val, error) {
+  Continue(func)
 }
 
-/// chains an operation onto an existing delay to be run one then into the next
-/// if delayed has already error'd then `f` will be ignored 
+/// Chains an operation onto an existing delay. The result of the current delay will be lazily passed to `func`
+/// `func` will not be called if the delay has already returned an error
 pub fn map(
   delayed: Delay(val, error),
-  f: fn(val) -> Result(f_res, error),
+  func: fn(val) -> Result(f_res, error),
 ) -> Delay(f_res, error) {
   case delayed {
     Continue(delayed_f) ->
-      chain(delayed_f, f)
+      chain(delayed_f, func)
       |> delay_effect
 
     Stop(err) -> Stop(err)
@@ -29,13 +28,13 @@ pub fn map(
 }
 
 fn chain(
-  delayed_f: fn() -> Result(val, error),
-  f: fn(val) -> Result(f_res, error),
+  delayed_func: fn() -> Result(val, error),
+  func: fn(val) -> Result(f_res, error),
 ) -> fn() -> Result(f_res, error) {
-  fn() { result.try(delayed_f(), f) }
+  fn() { result.try(delayed_func(), func) }
 }
 
-/// flatten nested Delay
+/// flatten a nested Delay
 pub fn flatten(
   delayed: Delay(Delay(inner_res, error), error),
 ) -> Delay(inner_res, error) {
@@ -61,17 +60,17 @@ pub fn flatten(
   |> delay_effect
 }
 
-/// map and then flatten Delay
+/// Map and then flatten `delayed`
 pub fn flat_map(
   delayed: Delay(val, error),
-  f: fn(val) -> Result(Delay(f_res, error), error),
+  func: fn(val) -> Result(Delay(f_res, error), error),
 ) -> Delay(f_res, error) {
   delayed
-  |> map(f)
+  |> map(func)
   |> flatten
 }
 
-/// returns a Delay that will be re-attempted `retries` times with `delay` ms in between
+/// Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
 /// NOTE: `delay` is ignored in JS
 pub fn retry(
   delayed: Delay(val, error),
@@ -81,7 +80,7 @@ pub fn retry(
   delay_effect(fn() { do_retry(delayed, retries, delay, False) })
 }
 
-/// returns a Delay that will be re-attempted `retries` times with an increasing backoff delay
+/// Returns a Delay that will be re-attempted `retries` times with an increasing backoff delay
 /// NOTE: there is no backoff in JS
 pub fn retry_with_backoff(
   delayed: Delay(val, error),
@@ -117,8 +116,8 @@ fn do_retry(
   }
 }
 
-/// run a delayed effect and get the result
-/// short-circuiting if any in the chain returns an Error
+/// Run a delayed effect and get the result
+/// short-circuiting if any in delay in the chain returns an Error
 pub fn run(delayed: Delay(val, error)) -> Result(val, error) {
   case delayed {
     Continue(f) -> f()
@@ -126,14 +125,14 @@ pub fn run(delayed: Delay(val, error)) -> Result(val, error) {
   }
 }
 
-/// run a delayed effect and throw away the result
+/// Run a delayed effect and throw away the result
 /// short-circuiting if any in the chain returns an Error
 pub fn drain(delayed: Delay(val, error)) -> Nil {
   let _ = run(delayed)
   Nil
 }
 
-/// repeat a Delay and return the results in a list 
+/// Repeat a Delay and return the results in a list 
 pub fn repeat(
   delayed: Delay(val, error),
   repetition: Int,
@@ -143,13 +142,13 @@ pub fn repeat(
   |> every
 }
 
-/// run every effect in sequence and get their results
+/// Run every effect in sequence and get their results
 pub fn every(effects: List(Delay(val, err))) -> List(Result(val, err)) {
   do_every(effects, [])
 }
 
-/// run all effects in sequence and return True if all succeed
-/// note this will _always_ run _every_ effect
+/// Run all effects in sequence and return True if all succeed
+/// NOTE: this will _always_ run _every_ effect
 pub fn all(effects: List(Delay(val, err))) -> Bool {
   effects
   |> every()
@@ -157,8 +156,8 @@ pub fn all(effects: List(Delay(val, err))) -> Bool {
   |> result.is_ok()
 }
 
-/// run all effects in sequence and return True if any succeeds
-/// note this is different than `fallthrough/1` because it will _always_ run _every_ effect
+/// Run all effects in sequence and return True if any succeeds
+/// NOTE: this is different than `fallthrough/1` because it will _always_ run _every_ effect
 pub fn any(effects: List(Delay(val, err))) -> Bool {
   effects
   |> every()
@@ -178,7 +177,7 @@ fn do_every(
   }
 }
 
-/// attempt multiple Delays until one returns an Ok
+/// Attempt multiple Delays until one returns an Ok
 /// unlike `any/1` this will short circuit on the first Ok
 pub fn fallthrough(effects: List(Delay(val, err))) -> Result(val, err) {
   do_fallthrough(effects)

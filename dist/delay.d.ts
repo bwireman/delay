@@ -2,94 +2,93 @@
 /**
 * Type representing a delayed effect to be lazily evaluated
 */
-export type Delay$<FXE, FXD> = Continue<FXD, FXE> | Stop<FXE>
+export type Delay$<FXE, FXD> = Continue<FXE, FXD> | Stop<FXE>
 
 
 /**
-* store an effect to be run later
-* if `f` returns an Error then chain will stop
+* Stores an effect to be run later, short circuiting on errors
 */
-export function delay_effect<FXF, FXG>(f: () => Result<FXF, FXG>): Delay$<FXF, FXG>
+export function delay_effect<FXF, FXG>(func: () => Result<FXF, FXG>): Delay$<FXF, FXG>
 
 
 /**
-* chains an operation onto an existing delay to be run one then into the next
-* if delayed has already error'd then `f` will be ignored
+* Chains an operation onto an existing delay. The result of the current delay will be lazily passed to `func`
+* `func` will not be called if the delay has already returned an error
 */
-export function map<FXL, FXM, FXP>(delayed: Delay$<FXL, FXM>, f: (x0: FXL) => Result<FXP, FXM>): Delay$<FXP, FXM>
+export function map<FXL, FXM, FXP>(delayed: Delay$<FXL, FXM>, func: (x0: FXL) => Result<FXP, FXM>): Delay$<FXP, FXM>
 
 
 /**
-* flatten nested Delay
+* flatten a nested Delay
 */
 export function flatten<FYD, FYE>(delayed: Delay$<Delay$<FYD, FYE>, FYE>): Delay$<FYD, FYE>
 
 
 /**
-* map and then flatten Delay
+* Map and then flatten `delayed`
 */
 export function flat_map<FYL, FYM, FYP>(
   delayed: Delay$<FYL, FYM>,
-  f: (x0: FYL) => Result<Delay$<FYP, FYM>, FYM>
+  func: (x0: FYL) => Result<Delay$<FYP, FYM>, FYM>
 ): Delay$<FYP, FYM>
 
 
 /**
-* run a delayed effect and get the result
-* short-circuiting if any in the chain returns an Error
+* Run a delayed effect and get the result
+* short-circuiting if any in delay in the chain returns an Error
 */
 export function run<FZO, FZP>(delayed: Delay$<FZO, FZP>): Result<FZO, FZP>
 
 
 /**
-* returns a Delay that will be re-attempted `retries` times with `delay` ms in between
+* Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
 * NOTE: `delay` is ignored in JS
 */
 export function retry<FYW, FYX>(delayed: Delay$<FYW, FYX>, retries: number, delay: number): Delay$<FYW, FYX>
 
 
 /**
-* returns a Delay that will be re-attempted `retries` times with `delay` ms in between
+* Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
 * NOTE: `delay` is ignored in JS
 */
 export function retry_with_backoff<FZC, FZD>(delayed: Delay$<FZC, FZD>, retries: number): Delay$<FZC, FZD>
 
 
 /**
-* run a delayed effect and throw away the result
+* Run a delayed effect and throw away the result
 * short-circuiting if any in the chain returns an Error
 */
 export function drain(delayed: Delay$<any, any>): null
 
 
 /**
-* run every effect in sequence and get their results
+* Run every effect in sequence and get their results
 */
 export function every<GAF, GAG>(effects: List<Delay$<GAF, GAG>>): List<Result<GAF, GAG>>
 
 
 /**
-* repeat a Delay and return the results in a list
+* Repeat a Delay and return the results in a list
 */
 export function repeat<FZY, FZZ>(delayed: Delay$<FZY, FZZ>, repetition: number): List<Result<FZY, FZZ>>
 
 
 /**
-* run all effects in sequence and return True if all succeed
-* note this will _always_ run _every_ effect
+* Run all effects in sequence and return True if all succeed
+* NOTE: this will _always_ run _every_ effect
 */
 export function all(effects: List<Delay$<any, any>>): boolean
 
 
 /**
-* run all effects in sequence and return True if any succeeds
-* note this is different than `fallthrough/1` because it will _always_ run _every_ effect
+* Run all effects in sequence and return True if any succeeds
+* NOTE: this is different than `fallthrough/1` because it will _always_ run _every_ effect
 */
 export function any(effects: List<Delay$<any, any>>): boolean
 
 
 /**
-* attempt multiple Delays until one returns an Ok
+* Attempt multiple Delays until one returns an Ok
 * unlike `any/1` this will short circuit on the first Ok
 */
 export function fallthrough<GBI, GBJ>(effects: List<Delay$<GBI, GBJ>>): Result<GBI, GBJ>
@@ -168,7 +167,7 @@ export function divideInt(a: number, b: number): number
 
 export function divideFloat(a: number, b: number): number
 
-export class Continue<FXD, FXE> extends CustomType {
+export class Continue<FXE, FXD> extends CustomType {
   constructor(effect: () => Result<any, any>)
   effect(): Result<any, any>
 }

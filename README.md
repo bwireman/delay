@@ -38,6 +38,7 @@ let res = delay.run(d)
 The result of `delay_effect` is really just a first class function with a nice API wrapper. It isn't executed until put through one of `run/1`, `drain/1` or `fallthrough/1`. And can be called as many times as you want.
 
 ```gleam
+import gleam/io
 import delay
 
 let d = delay.delay_effect(fn() {

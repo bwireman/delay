@@ -320,28 +320,27 @@ var Stop = class extends CustomType {
 }
 
 /**
- * store an effect to be run later
- * if `f` returns an Error then chain will stop
+ * Stores an effect to be run later, short circuiting on errors
  */
-function delay_effect(f) {
-  return new Continue(f)
+function delay_effect(func) {
+  return new Continue(func)
 }
 __name(delay_effect, "delay_effect")
-function chain(delayed_f, f) {
+function chain(delayed_func, func) {
   return () => {
-    return try$(delayed_f(), f)
+    return try$(delayed_func(), func)
   }
 }
 __name(chain, "chain")
 
 /**
- * chains an operation onto an existing delay to be run one then into the next
- * if delayed has already error'd then `f` will be ignored
+ * Chains an operation onto an existing delay. The result of the current delay will be lazily passed to `func`
+ * `func` will not be called if the delay has already returned an error
  */
-function map3(delayed, f) {
+function map3(delayed, func) {
   if (delayed instanceof Continue) {
     let delayed_f = delayed.effect
-    let _pipe = chain(delayed_f, f)
+    let _pipe = chain(delayed_f, func)
     return delay_effect(_pipe)
   } else {
     let err = delayed.err
@@ -351,7 +350,7 @@ function map3(delayed, f) {
 __name(map3, "map")
 
 /**
- * flatten nested Delay
+ * flatten a nested Delay
  */
 function flatten(delayed) {
   let _pipe = (() => {
@@ -388,11 +387,11 @@ function flatten(delayed) {
 __name(flatten, "flatten")
 
 /**
- * map and then flatten Delay
+ * Map and then flatten `delayed`
  */
-function flat_map(delayed, f) {
+function flat_map(delayed, func) {
   let _pipe = delayed
-  let _pipe$1 = map3(_pipe, f)
+  let _pipe$1 = map3(_pipe, func)
   return flatten(_pipe$1)
 }
 __name(flat_map, "flat_map")
@@ -402,8 +401,8 @@ function sleep(_) {
 __name(sleep, "sleep")
 
 /**
- * run a delayed effect and get the result
- * short-circuiting if any in the chain returns an Error
+ * Run a delayed effect and get the result
+ * short-circuiting if any in delay in the chain returns an Error
  */
 function run(delayed) {
   if (delayed instanceof Continue) {
@@ -436,7 +435,7 @@ function do_retry(delayed, retries, delay, backoff) {
 __name(do_retry, "do_retry")
 
 /**
- * returns a Delay that will be re-attempted `retries` times with `delay` ms in between
+ * Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
  * NOTE: `delay` is ignored in JS
  */
 function retry(delayed, retries, delay) {
@@ -447,7 +446,7 @@ function retry(delayed, retries, delay) {
 __name(retry, "retry")
 
 /**
- * returns a Delay that will be re-attempted `retries` times with `delay` ms in between
+ * Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
  * NOTE: `delay` is ignored in JS
  */
 function retry_with_backoff(delayed, retries) {
@@ -458,7 +457,7 @@ function retry_with_backoff(delayed, retries) {
 __name(retry_with_backoff, "retry_with_backoff")
 
 /**
- * run a delayed effect and throw away the result
+ * Run a delayed effect and throw away the result
  * short-circuiting if any in the chain returns an Error
  */
 function drain(delayed) {
@@ -479,14 +478,14 @@ function do_every(loop$effects, loop$results) {
       loop$effects = rest
       loop$results = toList([run(head)], results)
     } else {
-      throw makeError("todo", "delay", 177, "do_every", "Empty list", {})
+      throw makeError("todo", "delay", 176, "do_every", "Empty list", {})
     }
   }
 }
 __name(do_every, "do_every")
 
 /**
- * run every effect in sequence and get their results
+ * Run every effect in sequence and get their results
  */
 function every(effects) {
   return do_every(effects, toList([]))
@@ -494,7 +493,7 @@ function every(effects) {
 __name(every, "every")
 
 /**
- * repeat a Delay and return the results in a list
+ * Repeat a Delay and return the results in a list
  */
 function repeat2(delayed, repetition) {
   let _pipe = delayed
@@ -504,8 +503,8 @@ function repeat2(delayed, repetition) {
 __name(repeat2, "repeat")
 
 /**
- * run all effects in sequence and return True if all succeed
- * note this will _always_ run _every_ effect
+ * Run all effects in sequence and return True if all succeed
+ * NOTE: this will _always_ run _every_ effect
  */
 function all2(effects) {
   let _pipe = effects
@@ -516,8 +515,8 @@ function all2(effects) {
 __name(all2, "all")
 
 /**
- * run all effects in sequence and return True if any succeeds
- * note this is different than `fallthrough/1` because it will _always_ run _every_ effect
+ * Run all effects in sequence and return True if any succeeds
+ * NOTE: this is different than `fallthrough/1` because it will _always_ run _every_ effect
  */
 function any(effects) {
   return (
@@ -541,13 +540,13 @@ function do_fallthrough(effects) {
       return fallthrough(rest)
     })
   } else {
-    throw makeError("todo", "delay", 192, "do_fallthrough", "Empty list", {})
+    throw makeError("todo", "delay", 191, "do_fallthrough", "Empty list", {})
   }
 }
 __name(do_fallthrough, "do_fallthrough")
 
 /**
- * attempt multiple Delays until one returns an Ok
+ * Attempt multiple Delays until one returns an Ok
  * unlike `any/1` this will short circuit on the first Ok
  */
 function fallthrough(effects) {

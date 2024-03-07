@@ -142,6 +142,24 @@ function is_ok(result) {
   }
 }
 __name(is_ok, "is_ok")
+function try$(result, fun) {
+  if (result.isOk()) {
+    let x = result[0]
+    return fun(x)
+  } else {
+    let e = result[0]
+    return new Error2(e)
+  }
+}
+__name(try$, "try$")
+function lazy_or(first, second) {
+  if (first.isOk()) {
+    return first
+  } else {
+    return second()
+  }
+}
+__name(lazy_or, "lazy_or")
 function all(results) {
   return try_map(results, x => {
     return x
@@ -311,14 +329,7 @@ function delay_effect(f) {
 __name(delay_effect, "delay_effect")
 function chain(delayed_f, f) {
   return () => {
-    let $ = delayed_f()
-    if ($.isOk()) {
-      let value = $[0]
-      return f(value)
-    } else {
-      let err = $[0]
-      return new Error2(err)
-    }
+    return try$(delayed_f(), f)
   }
 }
 __name(chain, "chain")
@@ -404,35 +415,22 @@ function run(delayed) {
   }
 }
 __name(run, "run")
-function do_retry(loop$delayed, loop$retries, loop$delay, loop$backoff) {
-  while (true) {
-    let delayed = loop$delayed
-    let retries = loop$retries
-    let delay = loop$delay
-    let backoff = loop$backoff
-    let delay$1 = (() => {
-      if (backoff) {
-        return delay + 1e3
-      } else {
-        return delay
-      }
-    })()
-    if (retries <= 1) {
-      let n = retries
-      return run(delayed)
+function do_retry(delayed, retries, delay, backoff) {
+  let delay$1 = (() => {
+    if (backoff) {
+      return delay + 1e3
     } else {
-      let $ = run(delayed)
-      if ($.isOk()) {
-        let res = $[0]
-        return new Ok(res)
-      } else {
-        sleep(delay$1)
-        loop$delayed = delayed
-        loop$retries = retries - 1
-        loop$delay = delay$1
-        loop$backoff = backoff
-      }
+      return delay
     }
+  })()
+  if (retries <= 1) {
+    let n = retries
+    return run(delayed)
+  } else {
+    return lazy_or(run(delayed), () => {
+      sleep(delay$1)
+      return do_retry(delayed, retries - 1, delay$1, backoff)
+    })
   }
 }
 __name(do_retry, "do_retry")
@@ -481,7 +479,7 @@ function do_every(loop$effects, loop$results) {
       loop$effects = rest
       loop$results = toList([run(head)], results)
     } else {
-      throw makeError("todo", "delay", 185, "do_every", "Empty list", {})
+      throw makeError("todo", "delay", 177, "do_every", "Empty list", {})
     }
   }
 }
@@ -539,15 +537,11 @@ function do_fallthrough(effects) {
   } else if (effects.atLeastLength(1)) {
     let head = effects.head
     let rest = effects.tail
-    let $ = run(head)
-    if ($.isOk()) {
-      let res = $[0]
-      return new Ok(res)
-    } else {
+    return lazy_or(run(head), () => {
       return fallthrough(rest)
-    }
+    })
   } else {
-    throw makeError("todo", "delay", 204, "do_fallthrough", "Empty list", {})
+    throw makeError("todo", "delay", 192, "do_fallthrough", "Empty list", {})
   }
 }
 __name(do_fallthrough, "do_fallthrough")

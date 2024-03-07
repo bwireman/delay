@@ -32,12 +32,7 @@ fn chain(
   delayed_f: fn() -> Result(val, error),
   f: fn(val) -> Result(f_res, error),
 ) -> fn() -> Result(f_res, error) {
-  fn() {
-    case delayed_f() {
-      Ok(value) -> f(value)
-      Error(err) -> Error(err)
-    }
-  }
+  fn() { result.try(delayed_f(), f) }
 }
 
 /// flatten nested Delay
@@ -115,13 +110,10 @@ fn do_retry(
   case retries {
     n if n <= 1 -> run(delayed)
     _ ->
-      case run(delayed) {
-        Ok(res) -> Ok(res)
-        Error(_) -> {
-          sleep(delay)
-          do_retry(delayed, retries - 1, delay, backoff)
-        }
-      }
+      result.lazy_or(run(delayed), fn() {
+        sleep(delay)
+        do_retry(delayed, retries - 1, delay, backoff)
+      })
   }
 }
 
@@ -196,11 +188,7 @@ pub fn fallthrough(effects: List(Delay(val, err))) -> Result(val, err) {
 fn do_fallthrough(effects: List(Delay(val, err))) -> Result(val, err) {
   case effects {
     [last] -> run(last)
-    [head, ..rest] ->
-      case run(head) {
-        Ok(res) -> Ok(res)
-        Error(_) -> fallthrough(rest)
-      }
+    [head, ..rest] -> result.lazy_or(run(head), fn() { fallthrough(rest) })
     [] -> panic as "Empty list"
   }
 }

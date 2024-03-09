@@ -4,136 +4,60 @@
 var __defProp = Object.defineProperty
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true })
 
-// build/dev/javascript/prelude.mjs
-var CustomType = class {
-  static {
-    __name(this, "CustomType")
-  }
-  withFields(fields) {
-    let properties = Object.keys(this).map(label => (label in fields ? fields[label] : this[label]))
-    return new this.constructor(...properties)
-  }
-}
-var List = class {
-  static {
-    __name(this, "List")
-  }
-  static fromArray(array, tail) {
-    let t = tail || new Empty()
-    return array.reduceRight((xs, x) => new NonEmpty(x, xs), t)
-  }
-  [Symbol.iterator]() {
-    return new ListIterator(this)
-  }
-  toArray() {
-    return [...this]
-  }
-  // @internal
-  atLeastLength(desired) {
-    for (let _ of this) {
-      if (desired <= 0) return true
-      desired--
-    }
-    return desired <= 0
-  }
-  // @internal
-  hasLength(desired) {
-    for (let _ of this) {
-      if (desired <= 0) return false
-      desired--
-    }
-    return desired === 0
-  }
-  countLength() {
-    let length3 = 0
-    for (let _ of this) length3++
-    return length3
-  }
-}
-function toList(elements, tail) {
-  return List.fromArray(elements, tail)
-}
-__name(toList, "toList")
-var ListIterator = class {
-  static {
-    __name(this, "ListIterator")
-  }
-  #current
-  constructor(current) {
-    this.#current = current
-  }
-  next() {
-    if (this.#current instanceof Empty) {
-      return { done: true }
-    } else {
-      let { head, tail } = this.#current
-      this.#current = tail
-      return { value: head, done: false }
-    }
-  }
-}
-var Empty = class extends List {
-  static {
-    __name(this, "Empty")
-  }
-}
-var NonEmpty = class extends List {
-  static {
-    __name(this, "NonEmpty")
-  }
-  constructor(head, tail) {
-    super()
-    this.head = head
-    this.tail = tail
-  }
-}
-var Result = class _Result extends CustomType {
-  static {
-    __name(this, "Result")
-  }
-  // @internal
-  static isResult(data) {
-    return data instanceof _Result
-  }
-}
-var Ok = class extends Result {
-  static {
-    __name(this, "Ok")
-  }
-  constructor(value) {
-    super()
-    this[0] = value
-  }
-  // @internal
-  isOk() {
-    return true
-  }
-}
-var Error2 = class extends Result {
-  static {
-    __name(this, "Error")
-  }
-  constructor(detail) {
-    super()
-    this[0] = detail
-  }
-  // @internal
-  isOk() {
-    return false
-  }
-}
-function makeError(variant, module, line, fn, message, extra) {
-  let error = new globalThis.Error(message)
-  error.gleam_error = variant
-  error.module = module
-  error.line = line
-  error.fn = fn
-  for (let k in extra) error[k] = extra[k]
-  return error
-}
-__name(makeError, "makeError")
+// build/dev/javascript/gleam_stdlib/gleam/list.mjs
+import {
+  Ok as Ok7,
+  Error as Error9,
+  toList as toList7,
+  CustomType as $CustomType6,
+  divideInt as divideInt2,
+  isEqual as isEqual6
+} from "./extras/prelude.mjs"
+
+// build/dev/javascript/gleam_stdlib/gleam/dict.mjs
+import { Error as Error8, toList as toList6, isEqual as isEqual5 } from "./extras/prelude.mjs"
+
+// build/dev/javascript/gleam_stdlib/gleam/option.mjs
+import { Ok, Error as Error2, toList, CustomType as $CustomType, isEqual } from "./extras/prelude.mjs"
+
+// build/dev/javascript/gleam_stdlib/gleam_stdlib.mjs
+import {
+  BitArray,
+  Error as Error7,
+  List,
+  Ok as Ok6,
+  Result,
+  UtfCodepoint,
+  stringBits,
+  toBitArray,
+  NonEmpty,
+  CustomType
+} from "./extras/prelude.mjs"
+
+// build/dev/javascript/gleam_stdlib/gleam/regex.mjs
+import { CustomType as $CustomType2 } from "./extras/prelude.mjs"
+
+// build/dev/javascript/gleam_stdlib/gleam/dynamic.mjs
+import { Ok as Ok5, Error as Error6, toList as toList5, CustomType as $CustomType5 } from "./extras/prelude.mjs"
+
+// build/dev/javascript/gleam_stdlib/gleam/int.mjs
+import {
+  Ok as Ok3,
+  Error as Error4,
+  toList as toList2,
+  CustomType as $CustomType4,
+  remainderInt,
+  divideInt
+} from "./extras/prelude.mjs"
+
+// build/dev/javascript/gleam_stdlib/gleam/float.mjs
+import { Ok as Ok2, Error as Error3, divideFloat } from "./extras/prelude.mjs"
+
+// build/dev/javascript/gleam_stdlib/gleam/order.mjs
+import { CustomType as $CustomType3, isEqual as isEqual2 } from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/gleam/result.mjs
+import { Ok as Ok4, Error as Error5, toList as toList3 } from "./extras/prelude.mjs"
 function is_ok(result) {
   if (!result.isOk()) {
     return false
@@ -148,7 +72,7 @@ function try$(result, fun) {
     return fun(x)
   } else {
     let e = result[0]
-    return new Error2(e)
+    return new Error5(e)
   }
 }
 __name(try$, "try$")
@@ -167,7 +91,11 @@ function all(results) {
 }
 __name(all, "all")
 
+// build/dev/javascript/gleam_stdlib/gleam/string_builder.mjs
+import { toList as toList4, isEqual as isEqual3 } from "./extras/prelude.mjs"
+
 // build/dev/javascript/gleam_stdlib/dict.mjs
+import { isEqual as isEqual4 } from "./extras/prelude.mjs"
 var tempDataView = new DataView(new ArrayBuffer(8))
 var SHIFT = 5
 var BUCKET_SIZE = Math.pow(2, SHIFT)
@@ -208,13 +136,13 @@ function do_reverse_acc(loop$remaining, loop$accumulator) {
       let item = remaining.head
       let rest$1 = remaining.tail
       loop$remaining = rest$1
-      loop$accumulator = toList([item], accumulator)
+      loop$accumulator = toList7([item], accumulator)
     }
   }
 }
 __name(do_reverse_acc, "do_reverse_acc")
 function do_reverse(list) {
-  return do_reverse_acc(list, toList([]))
+  return do_reverse_acc(list, toList7([]))
 }
 __name(do_reverse, "do_reverse")
 function reverse(xs) {
@@ -234,7 +162,7 @@ function do_filter(loop$list, loop$fun, loop$acc) {
       let new_acc = (() => {
         let $ = fun(x)
         if ($) {
-          return toList([x], acc)
+          return toList7([x], acc)
         } else {
           return acc
         }
@@ -247,7 +175,7 @@ function do_filter(loop$list, loop$fun, loop$acc) {
 }
 __name(do_filter, "do_filter")
 function filter(list, predicate) {
-  return do_filter(list, predicate, toList([]))
+  return do_filter(list, predicate, toList7([]))
 }
 __name(filter, "filter")
 function do_try_map(loop$list, loop$fun, loop$acc) {
@@ -256,7 +184,7 @@ function do_try_map(loop$list, loop$fun, loop$acc) {
     let fun = loop$fun
     let acc = loop$acc
     if (list.hasLength(0)) {
-      return new Ok(reverse(acc))
+      return new Ok7(reverse(acc))
     } else {
       let x = list.head
       let xs = list.tail
@@ -265,17 +193,17 @@ function do_try_map(loop$list, loop$fun, loop$acc) {
         let y = $[0]
         loop$list = xs
         loop$fun = fun
-        loop$acc = toList([y], acc)
+        loop$acc = toList7([y], acc)
       } else {
         let error = $[0]
-        return new Error2(error)
+        return new Error9(error)
       }
     }
   }
 }
 __name(do_try_map, "do_try_map")
 function try_map(list, fun) {
-  return do_try_map(list, fun, toList([]))
+  return do_try_map(list, fun, toList7([]))
 }
 __name(try_map, "try_map")
 function do_repeat(loop$a, loop$times, loop$acc) {
@@ -289,18 +217,19 @@ function do_repeat(loop$a, loop$times, loop$acc) {
     } else {
       loop$a = a
       loop$times = times - 1
-      loop$acc = toList([a], acc)
+      loop$acc = toList7([a], acc)
     }
   }
 }
 __name(do_repeat, "do_repeat")
 function repeat(a, times) {
-  return do_repeat(a, times, toList([]))
+  return do_repeat(a, times, toList7([]))
 }
 __name(repeat, "repeat")
 
 // build/dev/javascript/delay/delay.mjs
-var Continue = class extends CustomType {
+import { Error as Error10, toList as toList8, CustomType as $CustomType7, makeError } from "./extras/prelude.mjs"
+var Continue = class extends $CustomType7 {
   static {
     __name(this, "Continue")
   }
@@ -309,7 +238,7 @@ var Continue = class extends CustomType {
     this.effect = effect
   }
 }
-var Stop = class extends CustomType {
+var Stop = class extends $CustomType7 {
   static {
     __name(this, "Stop")
   }
@@ -372,13 +301,13 @@ function flatten(delayed) {
           return inner_f()
         } else {
           let err = inner.err
-          return new Error2(err)
+          return new Error10(err)
         }
       }
     } else {
       let err = delayed.err
       return () => {
-        return new Error2(err)
+        return new Error10(err)
       }
     }
   })()
@@ -410,7 +339,7 @@ function run(delayed) {
     return f()
   } else {
     let err = delayed.err
-    return new Error2(err)
+    return new Error10(err)
   }
 }
 __name(run, "run")
@@ -471,12 +400,12 @@ function do_every(loop$effects, loop$results) {
     let results = loop$results
     if (effects.hasLength(1)) {
       let last = effects.head
-      return toList([run(last)], results)
+      return toList8([run(last)], results)
     } else if (effects.atLeastLength(1)) {
       let head = effects.head
       let rest = effects.tail
       loop$effects = rest
-      loop$results = toList([run(head)], results)
+      loop$results = toList8([run(head)], results)
     } else {
       throw makeError("todo", "delay", 176, "do_every", "Empty list", {})
     }
@@ -488,7 +417,7 @@ __name(do_every, "do_every")
  * Run every effect in sequence and get their results
  */
 function every(effects) {
-  return do_every(effects, toList([]))
+  return do_every(effects, toList8([]))
 }
 __name(every, "every")
 

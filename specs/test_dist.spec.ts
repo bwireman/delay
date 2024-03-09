@@ -1,12 +1,9 @@
 // smoke tests to establish that the NPM code can be used
 // & works as expected
 import { delay_effect, map, run, repeat, fallthrough, every, any, all } from "../dist/delay"
-import type { Ok, Error } from "../dist/delay"
+import { get, ok, error, isOk, toList } from "../dist/extras/extras.mjs"
 import { expect, test } from 'vitest'
-import * as pre from "./prelude.mjs"
 
-const ok = <T, E>(v: T): Ok<T, E> => new pre.Ok(v)
-const err = <T, E>(v: E): Error<T, E> => new pre.Error(v)
 
 test("delay_effect", () => {
     let fin = 0
@@ -17,15 +14,15 @@ test("delay_effect", () => {
 
     expect(fin).toBe(0)
 
-    let res = run(d)[0]
+    let res = get(run(d))
     expect(res).toBe(fin)
     expect(fin).toBe(1)
 
-    res = run(d)[0]
+    res = get(run(d))
     expect(res).toBe(fin)
     expect(fin).toBe(2)
 
-    res = run(d)[0]
+    res = get(run(d))
     expect(res).toBe(fin)
     expect(fin).toBe(3)
 })
@@ -35,14 +32,14 @@ test("map", () => {
     d1 = map(d1, (v) => ok(v + "WORLD"))
     d1 = map(d1, (v) => ok(v + "!"))
 
-    const res1 = run(d1)[0]
+    const res1 = get(run(d1))
     expect(res1).toBe("HELLOWORLD!")
 
     let d2 = delay_effect(() => ok("HELLO"))
     d2 = map(d2, (v) => ok(v + "WORLD"))
-    d2 = map(d2, (_) => err("shit!"))
+    d2 = map(d2, (_) => error("shit!"))
 
-    const res2 = run(d2)[0]
+    const res2 = get(run(d2))
     expect(res2).toBe("shit!")
 })
 
@@ -57,7 +54,7 @@ test("repeat", () => {
 
     const res = repeat(d, 3)
         .toArray()
-        .map((x) => x[0])
+        .map((x) => get(x))
 
     expect(res).toStrictEqual([3, 2, 1])
     expect(fin).toBe(3)
@@ -71,24 +68,22 @@ test("every, any & all", () => {
         }
 
         fin += 1
-        return err("err!")
+        return error("err!")
     })
 
-    const res = every(pre.List.fromArray([d, d, d]))
+    const res = every(toList([d, d, d]))
         .toArray()
 
-    expect(res[0].isOk()).toBe(true)
-    expect(res[1].isOk()).toBe(false)
-    expect(res[2].isOk()).toBe(false)
+    expect(isOk(res[0])).toBe(true)
+    expect(isOk(res[1])).toBe(false)
+    expect(isOk(res[2])).toBe(false)
 
     fin = 0
-    expect(any(pre.List.fromArray([d, d, d]))).toBe(true)
+    expect(any(toList([d, d, d]))).toBe(true)
 
     fin = 0
-    expect(all(pre.List.fromArray([d, d, d]))).toBe(false)
+    expect(all(toList([d, d, d]))).toBe(false)
 })
-
-
 
 test("fallthrough", () => {
     let fin = 0
@@ -98,17 +93,17 @@ test("fallthrough", () => {
         }
 
         fin += 1
-        return err("err!")
+        return error("err!")
     })
 
-    expect(fallthrough(pre.List.fromArray([d])).isOk()).toBe(false)
+    expect(isOk(fallthrough(toList([d])))).toBe(false)
     fin = 0
 
-    expect(fallthrough(pre.List.fromArray([d, d])).isOk()).toBe(false)
+    expect(isOk(fallthrough(toList([d, d])))).toBe(false)
     fin = 0
 
-    expect(fallthrough(pre.List.fromArray([d, d, d])).isOk()).toBe(true)
-    expect(fallthrough(pre.List.fromArray([d, d, d, d])).isOk()).toBe(true)
+    expect(isOk(fallthrough(toList([d, d, d])))).toBe(true)
+    expect(isOk(fallthrough(toList([d, d, d, d])))).toBe(true)
 
     expect(fin).toBe(2)
 })

@@ -80,10 +80,10 @@ npm i delay-gleam
 
 ```javascript
 import { delay_effect, map, run } from "delay-gleam"
-import { Ok, Error } from "delay-gleam/extras"
+import { ok, error } from "delay-gleam/extras"
 
-d = delay_effect(() => new Error(console.log("123")))
-d = map(d, (_) => new Ok(console.log("456")))
+d = delay_effect(() => error(console.log("123")))
+d = map(d, (_) => ok(console.log("456")))
 run(d)
 // 123
 ```

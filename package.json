@@ -22,6 +22,10 @@
     "README.md",
     "LICENSE"
   ],
+  "exports": {
+    ".": "./dist/delay.js",
+    "./extras": "./dist/extras/extras.mjs"
+  },
   "license": "MIT",
   "private": false,
   "scripts": {

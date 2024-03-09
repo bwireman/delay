@@ -4,14 +4,18 @@ set -e
 cd "$(dirname $0)/.."
 
 gleam clean
-rm -rf dist/
+rm -rf dist/delay.js
+rm -rf dist/delay.d.js
 gleam build --target javascript
 
 # format input for comments.py
 cat src/delay.gleam | grep pub -B 3 | grep -v "\}" | grep -v import | sed -E 's/\(.*//g' >comments.tmp
 
 yarn esbuild \
-    --bundle build/dev/javascript/delay/delay.mjs \
+    build/dev/javascript/delay/delay.mjs \
+    --bundle \
+    --external:*/prelude.mjs \
+    --external:*/gleam.mjs \
     --keep-names \
     --outdir=dist \
     --format=esm \
@@ -20,12 +24,19 @@ yarn esbuild \
     //https://www.npmjs.com/package/delay-gleam 
     //https://github.com/bwireman/delay'
 
+mv dist/delay.js dist/delay.js.tmp
+cat dist/delay.js.tmp |
+    sed 's/\.\.\/gleam.mjs/.\/extras\/prelude.mjs/g' |
+    sed 's/\.\/gleam.mjs/.\/extras\/prelude.mjs/g'  >dist/delay.js
+
+rm dist/delay.js.tmp
+
 # comment ./dist/delay.js
 ./scripts/comment.py dist/delay.js 'build/dev/javascript/delay/delay.mjs'
 
 yarn dets \
     --files build/dev/javascript/delay/delay.mjs \
-    --types build/dev/javascript/delay/delay.d.mts build/dev/javascript/delay/gleam.d.mts build/dev/javascript/prelude.d.mts \
+    --types build/dev/javascript/delay/delay.d.mts \
     --out dist/delay.d.ts.tmp
 
 # fixup issue in dets around iterator symbol and numbered properties

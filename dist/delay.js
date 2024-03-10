@@ -5,59 +5,26 @@ var __defProp = Object.defineProperty
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true })
 
 // build/dev/javascript/gleam_stdlib/gleam/list.mjs
-import {
-  Ok as Ok7,
-  Error as Error9,
-  toList as toList7,
-  CustomType as $CustomType6,
-  divideInt as divideInt2,
-  isEqual as isEqual6
-} from "./extras/prelude.mjs"
+import { Ok as Ok7, Error as Error9, toList as toList7 } from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/gleam/dict.mjs
-import { Error as Error8, toList as toList6, isEqual as isEqual5 } from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/gleam/option.mjs
-import { Ok, Error as Error2, toList, CustomType as $CustomType, isEqual } from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/gleam_stdlib.mjs
-import {
-  BitArray,
-  Error as Error7,
-  List,
-  Ok as Ok6,
-  Result,
-  UtfCodepoint,
-  stringBits,
-  toBitArray,
-  NonEmpty,
-  CustomType
-} from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/gleam/regex.mjs
-import { CustomType as $CustomType2 } from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/gleam/dynamic.mjs
-import { Ok as Ok5, Error as Error6, toList as toList5, CustomType as $CustomType5 } from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/gleam/int.mjs
-import {
-  Ok as Ok3,
-  Error as Error4,
-  toList as toList2,
-  CustomType as $CustomType4,
-  remainderInt,
-  divideInt
-} from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/gleam/float.mjs
-import { Ok as Ok2, Error as Error3, divideFloat } from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/gleam/order.mjs
-import { CustomType as $CustomType3, isEqual as isEqual2 } from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/gleam/result.mjs
-import { Ok as Ok4, Error as Error5, toList as toList3 } from "./extras/prelude.mjs"
+import { Error as Error5 } from "./extras/prelude.mjs"
 function is_ok(result) {
   if (!result.isOk()) {
     return false
@@ -92,16 +59,8 @@ function all(results) {
 __name(all, "all")
 
 // build/dev/javascript/gleam_stdlib/gleam/string_builder.mjs
-import { toList as toList4, isEqual as isEqual3 } from "./extras/prelude.mjs"
 
 // build/dev/javascript/gleam_stdlib/dict.mjs
-import { isEqual as isEqual4 } from "./extras/prelude.mjs"
-var tempDataView = new DataView(new ArrayBuffer(8))
-var SHIFT = 5
-var BUCKET_SIZE = Math.pow(2, SHIFT)
-var MASK = BUCKET_SIZE - 1
-var MAX_INDEX_NODE = BUCKET_SIZE / 2
-var MIN_ARRAY_NODE = BUCKET_SIZE / 4
 
 // build/dev/javascript/gleam_stdlib/gleam/list.mjs
 function do_length_acc(loop$list, loop$count) {

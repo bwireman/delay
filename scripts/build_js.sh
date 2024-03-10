@@ -26,6 +26,12 @@ yarn esbuild \
 
 mv dist/delay.js dist/delay.js.tmp
 cat dist/delay.js.tmp |
+    sed 's/var tempDataView.*//g' |
+    sed 's/var SHIFT.*//g' |
+    sed 's/var BUCKET_SIZE.*//g' |
+    sed 's/var MASK.*//g' |
+    sed 's/var MAX_INDEX_NODE.*//g' |
+    sed 's/var MIN_ARRAY_NODE.*//g' |
     sed 's/\.\.\/gleam.mjs/.\/extras\/prelude.mjs/g' |
     sed 's/\.\/gleam.mjs/.\/extras\/prelude.mjs/g'  >dist/delay.js
 
@@ -47,7 +53,11 @@ cat dist/delay.d.ts.tmp |
     sed 's/\"\[Symbol.iterator\]\"/\[Symbol.iterator\]/g' |
     sed 's/\"\([[:digit:]]\+\)\"/\1/g' >dist/delay.d.ts
 
+
+yarn eslint ./dist/delay.js --fix
+yarn eslint ./dist/extras/extras.mjs --fix
 yarn prettier ./dist --write
+yarn prettier ./dist/extras/extras.mjs --write
 
 # comment ./dist/delay.d.ts
 ./scripts/comment.py dist/delay.d.ts

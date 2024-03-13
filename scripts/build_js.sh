@@ -4,7 +4,7 @@ set -e
 cd "$(dirname $0)/.."
 
 gleam clean
-rm -rf dist/delay.js
+rm -rf dist/delay.mjs
 rm -rf dist/delay.d.js
 gleam build --target javascript
 
@@ -17,15 +17,15 @@ yarn esbuild \
     --external:*/prelude.mjs \
     --external:*/gleam.mjs \
     --keep-names \
-    --outdir=dist \
+    --outfile=dist/delay.mjs \
     --format=esm \
     --platform=neutral \
     --banner:js='//Code for `delay-gleam` Generated using Gleam & Esbuild 
     //https://www.npmjs.com/package/delay-gleam 
     //https://github.com/bwireman/delay'
 
-mv dist/delay.js dist/delay.js.tmp
-cat dist/delay.js.tmp |
+mv dist/delay.mjs dist/delay.mjs.tmp
+cat dist/delay.mjs.tmp |
     sed 's/var tempDataView.*//g' |
     sed 's/var SHIFT.*//g' |
     sed 's/var BUCKET_SIZE.*//g' |
@@ -35,34 +35,34 @@ cat dist/delay.js.tmp |
     grep -v "gleam/.*mjs" |
     grep -v "gleam_stdlib/.*mjs" |
     sed 's/\.\.\/gleam.mjs/.\/extras\/prelude.mjs/g' |
-    sed 's/\.\/gleam.mjs/.\/extras\/prelude.mjs/g'  >dist/delay.js
+    sed 's/\.\/gleam.mjs/.\/extras\/prelude.mjs/g'  >dist/delay.mjs
 
-rm dist/delay.js.tmp
+rm dist/delay.mjs.tmp
 
-# comment ./dist/delay.js
-./scripts/comment.py dist/delay.js 'build/dev/javascript/delay/delay.mjs'
+# comment ./dist/delay.mjs
+./scripts/comment.py dist/delay.mjs 'build/dev/javascript/delay/delay.mjs'
 
 yarn dets \
     --files build/dev/javascript/delay/delay.mjs \
     --types build/dev/javascript/delay/delay.d.mts \
-    --out dist/delay.d.ts.tmp
+    --out dist/delay.d.mts.tmp
 
 # fixup issue in dets around iterator symbol and numbered properties
 # & remove dets module declaration
-cat dist/delay.d.ts.tmp |
+cat dist/delay.d.mts.tmp |
     tail -n +2 |
     head -n -1 |
     sed 's/\"\[Symbol.iterator\]\"/\[Symbol.iterator\]/g' |
-    sed 's/\"\([[:digit:]]\+\)\"/\1/g' >dist/delay.d.ts
+    sed 's/\"\([[:digit:]]\+\)\"/\1/g' >dist/delay.d.mts
 
 
-yarn eslint ./dist/delay.js --fix
+yarn eslint ./dist/delay.mjs --fix
 yarn eslint ./dist/extras/extras.mjs --fix
 yarn prettier ./dist --write
 yarn prettier ./dist/extras/extras.mjs --write
 
-# comment ./dist/delay.d.ts
-./scripts/comment.py dist/delay.d.ts
+# comment ./dist/delay.d.mts
+./scripts/comment.py dist/delay.d.mts
 
 rm dist/*.tmp
 rm *.tmp

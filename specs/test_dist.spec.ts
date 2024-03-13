@@ -1,6 +1,6 @@
 // smoke tests to establish that the NPM code can be used
 // & works as expected
-import { delay_effect, map, run, repeat, fallthrough, every, any, all } from "../dist/delay"
+import { delay_effect, map, run, repeat, fallthrough, every, any, all } from "../dist/delay.mjs"
 import { get, ok, error, isOk, toList } from "../dist/extras/extras.mjs"
 import { expect, test } from 'vitest'
 

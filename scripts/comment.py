@@ -59,7 +59,7 @@ def write_comments(file_path, lines, start_line=None):
 
 if __name__ == "__main__":
     path = sys.argv[1]
-    export = path.endswith(".ts")
+    export = path.endswith(".mts")
     start_line = None
     if len(sys.argv) > 2:
         start_line = sys.argv[2]

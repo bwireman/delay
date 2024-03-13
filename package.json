@@ -2,7 +2,7 @@
   "name": "delay-gleam",
   "version": "0.3.0",
   "description": "A dead simple data-structure for delaying side effects ⌚!",
-  "main": "dist/delay.js",
+  "main": "dist/delay.mjs",
   "type": "module",
   "types": "dist/delay.d.mts",
   "repository": {
@@ -23,7 +23,7 @@
     "LICENSE"
   ],
   "exports": {
-    ".": "./dist/delay.js",
+    ".": "./dist/delay.mjs",
     "./extras": "./dist/extras/extras.mjs"
   },
   "license": "MIT",

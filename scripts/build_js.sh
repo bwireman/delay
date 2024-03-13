@@ -32,6 +32,8 @@ cat dist/delay.js.tmp |
     sed 's/var MASK.*//g' |
     sed 's/var MAX_INDEX_NODE.*//g' |
     sed 's/var MIN_ARRAY_NODE.*//g' |
+    grep -v "gleam/.*mjs" |
+    grep -v "gleam_stdlib/.*mjs" |
     sed 's/\.\.\/gleam.mjs/.\/extras\/prelude.mjs/g' |
     sed 's/\.\/gleam.mjs/.\/extras\/prelude.mjs/g'  >dist/delay.js
 

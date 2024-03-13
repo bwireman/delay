@@ -4,26 +4,8 @@
 var __defProp = Object.defineProperty
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true })
 
-// build/dev/javascript/gleam_stdlib/gleam/list.mjs
 import { Ok as Ok7, Error as Error9, toList as toList7 } from "./extras/prelude.mjs"
 
-// build/dev/javascript/gleam_stdlib/gleam/dict.mjs
-
-// build/dev/javascript/gleam_stdlib/gleam/option.mjs
-
-// build/dev/javascript/gleam_stdlib/gleam_stdlib.mjs
-
-// build/dev/javascript/gleam_stdlib/gleam/regex.mjs
-
-// build/dev/javascript/gleam_stdlib/gleam/dynamic.mjs
-
-// build/dev/javascript/gleam_stdlib/gleam/int.mjs
-
-// build/dev/javascript/gleam_stdlib/gleam/float.mjs
-
-// build/dev/javascript/gleam_stdlib/gleam/order.mjs
-
-// build/dev/javascript/gleam_stdlib/gleam/result.mjs
 import { Error as Error5 } from "./extras/prelude.mjs"
 function is_ok(result) {
   if (!result.isOk()) {
@@ -58,11 +40,6 @@ function all(results) {
 }
 __name(all, "all")
 
-// build/dev/javascript/gleam_stdlib/gleam/string_builder.mjs
-
-// build/dev/javascript/gleam_stdlib/dict.mjs
-
-// build/dev/javascript/gleam_stdlib/gleam/list.mjs
 function do_length_acc(loop$list, loop$count) {
   while (true) {
     let list = loop$list
@@ -311,7 +288,6 @@ function do_retry(delayed, retries, delay, backoff) {
     }
   })()
   if (retries <= 1) {
-    let n = retries
     return run(delayed)
   } else {
     return lazy_or(run(delayed), () => {

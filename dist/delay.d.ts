@@ -2,7 +2,7 @@
 /**
 * Type representing a delayed effect to be lazily evaluated
 */
-export type Delay$<FXD, FXE> = Continue<FXD, FXE> | Stop<FXE>
+export type Delay$<FXE, FXD> = Continue<FXE, FXD> | Stop<FXE>
 
 
 /**

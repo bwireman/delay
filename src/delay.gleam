@@ -107,7 +107,7 @@ fn do_retry(
   }
 
   case retries {
-    n if n <= 1 -> run(delayed)
+    _ if retries <= 1 -> run(delayed)
     _ ->
       result.lazy_or(run(delayed), fn() {
         sleep(delay)

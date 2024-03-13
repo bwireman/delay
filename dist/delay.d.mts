@@ -2,7 +2,7 @@
 /**
 * Type representing a delayed effect to be lazily evaluated
 */
-export type Delay$<FXD, FXE> = Continue<FXD, FXE> | Stop<FXE>
+export type Delay$<FXE, FXD> = Continue<FXE, FXD> | Stop<FXE>
 
 
 /**
@@ -93,7 +93,7 @@ export function any(effects: List<Delay$<any, any>>): boolean
 */
 export function fallthrough<GBI, GBJ>(effects: List<Delay$<GBI, GBJ>>): Result<GBI, GBJ>
 
-export class Continue<FXE, FXD> extends CustomType {
+export class Continue<FXD, FXE> extends CustomType {
   constructor(effect: () => Result<any, any>)
   effect(): Result<any, any>
 }

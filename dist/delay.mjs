@@ -325,7 +325,7 @@ __name(retry_with_backoff, "retry_with_backoff")
  * short-circuiting if any in the chain returns an Error
  */
 function drain(delayed) {
-  let $ = run(delayed)
+  run(delayed)
   return void 0
 }
 __name(drain, "drain")

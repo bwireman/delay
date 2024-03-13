@@ -34,6 +34,7 @@ cat dist/delay.mjs.tmp |
     sed 's/var MIN_ARRAY_NODE.*//g' |
     grep -v "gleam/.*mjs" |
     grep -v "gleam_stdlib/.*mjs" |
+    sed 's/let $ = run/run/g' |
     sed 's/\.\.\/gleam.mjs/.\/extras\/prelude.mjs/g' |
     sed 's/\.\/gleam.mjs/.\/extras\/prelude.mjs/g'  >dist/delay.mjs
 

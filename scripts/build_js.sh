@@ -3,6 +3,8 @@ set -e
 
 cd "$(dirname $0)/.."
 
+./scripts/update.sh
+
 gleam clean
 rm -rf dist/delay.mjs
 rm -rf dist/delay.d.js
@@ -34,7 +36,6 @@ cat dist/delay.mjs.tmp |
     sed 's/var MIN_ARRAY_NODE.*//g' |
     grep -v "gleam/.*mjs" |
     grep -v "gleam_stdlib/.*mjs" |
-    sed 's/let $ = run/run/g' |
     sed 's/\.\.\/gleam.mjs/.\/extras\/prelude.mjs/g' |
     sed 's/\.\/gleam.mjs/.\/extras\/prelude.mjs/g'  >dist/delay.mjs
 

@@ -1,6 +1,6 @@
 // smoke tests to establish that the NPM code can be used
 // & works as expected
-import { delay_effect, map, run, repeat, fallthrough, every, any, all } from "../dist/delay.mjs"
+import { delay_effect, map, join, run, repeat, fallthrough, every, any, all } from "../dist/delay.mjs"
 import { get, ok, error, isOk, toList } from "../dist/extras/extras.mjs"
 import { expect, test } from 'vitest'
 
@@ -41,6 +41,13 @@ test("map", () => {
 
     const res2 = get(run(d2))
     expect(res2).toBe("shit!")
+})
+
+test("join", () => {
+    let d1 = delay_effect(() => ok(1))
+    let d2 = delay_effect(() => ok(2))
+
+    expect(get(run(join(d1, d2)))).toStrictEqual([1, 2])
 })
 
 test("repeat", () => {

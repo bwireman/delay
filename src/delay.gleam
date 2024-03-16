@@ -1,5 +1,6 @@
 import gleam/list
 import gleam/result
+import gleam/option
 
 /// Type representing a delayed effect to be lazily evaluated
 pub opaque type Delay(val, error) {
@@ -9,7 +10,7 @@ pub opaque type Delay(val, error) {
 
 /// Stores an effect to be run later, short circuiting on errors
 pub fn delay_effect(func: fn() -> Result(val, error)) -> Delay(val, error) {
-  Continue(func)
+  Continue(effect: func)
 }
 
 /// Chains an operation onto an existing delay. The result of the current delay will be lazily passed to `func`
@@ -19,8 +20,8 @@ pub fn map(
   func: fn(val) -> Result(f_res, error),
 ) -> Delay(f_res, error) {
   case delayed {
-    Continue(delayed_f) ->
-      chain(delayed_f, func)
+    Continue(effect: delayed_func) ->
+      chain(delayed_func, func)
       |> delay_effect
 
     Stop(err) -> Stop(err)
@@ -41,15 +42,15 @@ pub fn flatten(
   case delayed {
     // depending on the state of delayed we either need a fn that returns the stop error
     // or a function that returns inner_res 
-    Continue(delayed_f) -> fn() {
+    Continue(effect: delayed_func) -> fn() {
       // run delayed_f and get or build a delay
-      let inner = case delayed_f() {
+      let inner = case delayed_func() {
         Ok(inner_delay) -> inner_delay
         Error(err) -> Stop(err)
       }
       // get the inner fn's resullt
       case inner {
-        Continue(inner_f) -> inner_f()
+        Continue(effect: inner_func) -> inner_func()
         Stop(err) -> Error(err)
       }
     }
@@ -68,6 +69,27 @@ pub fn flat_map(
   delayed
   |> map(func)
   |> flatten
+}
+
+/// returns a delay, that joins two delays. If `left` fails right will not be run, if either fails the result will be an Error
+pub fn join(
+  left: Delay(left_val, left_error),
+  right: Delay(right_val, right_error),
+) -> Delay(
+  #(left_val, right_val),
+  #(option.Option(left_error), option.Option(right_error)),
+) {
+  fn() {
+    case run(left) {
+      Error(err) -> Error(#(option.Some(err), option.None))
+      Ok(left_val) ->
+        case run(right) {
+          Ok(right_val) -> Ok(#(left_val, right_val))
+          Error(err) -> Error(#(option.None, option.Some(err)))
+        }
+    }
+  }
+  |> delay_effect
 }
 
 /// Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
@@ -120,7 +142,7 @@ fn do_retry(
 /// short-circuiting if any in delay in the chain returns an Error
 pub fn run(delayed: Delay(val, error)) -> Result(val, error) {
   case delayed {
-    Continue(f) -> f()
+    Continue(effect: func) -> func()
     Stop(err) -> Error(err)
   }
 }

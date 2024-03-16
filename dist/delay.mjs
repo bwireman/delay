@@ -6,6 +6,22 @@ var __name = (target, value) => __defProp(target, "name", { value, configurable:
 
 import { Ok as Ok7, Error as Error9, toList as toList7 } from "./extras/prelude.mjs"
 
+import { CustomType as $CustomType } from "./extras/prelude.mjs"
+var Some = class extends $CustomType {
+  static {
+    __name(this, "Some")
+  }
+  constructor(x0) {
+    super()
+    this[0] = x0
+  }
+}
+var None = class extends $CustomType {
+  static {
+    __name(this, "None")
+  }
+}
+
 import { Error as Error5 } from "./extras/prelude.mjs"
 function is_ok(result) {
   if (!result.isOk()) {
@@ -164,7 +180,13 @@ function repeat(a, times) {
 __name(repeat, "repeat")
 
 // build/dev/javascript/delay/delay.mjs
-import { Error as Error10, toList as toList8, CustomType as $CustomType7, makeError } from "./extras/prelude.mjs"
+import {
+  Ok as Ok8,
+  Error as Error10,
+  toList as toList8,
+  CustomType as $CustomType7,
+  makeError
+} from "./extras/prelude.mjs"
 var Continue = class extends $CustomType7 {
   static {
     __name(this, "Continue")
@@ -204,8 +226,8 @@ __name(chain, "chain")
  */
 function map3(delayed, func) {
   if (delayed instanceof Continue) {
-    let delayed_f = delayed.effect
-    let _pipe = chain(delayed_f, func)
+    let delayed_func = delayed.effect
+    let _pipe = chain(delayed_func, func)
     return delay_effect(_pipe)
   } else {
     let err = delayed.err
@@ -220,10 +242,10 @@ __name(map3, "map")
 function flatten(delayed) {
   let _pipe = (() => {
     if (delayed instanceof Continue) {
-      let delayed_f = delayed.effect
+      let delayed_func = delayed.effect
       return () => {
         let inner = (() => {
-          let $ = delayed_f()
+          let $ = delayed_func()
           if ($.isOk()) {
             let inner_delay = $[0]
             return inner_delay
@@ -233,8 +255,8 @@ function flatten(delayed) {
           }
         })()
         if (inner instanceof Continue) {
-          let inner_f = inner.effect
-          return inner_f()
+          let inner_func = inner.effect
+          return inner_func()
         } else {
           let err = inner.err
           return new Error10(err)
@@ -271,14 +293,39 @@ __name(sleep, "sleep")
  */
 function run(delayed) {
   if (delayed instanceof Continue) {
-    let f = delayed.effect
-    return f()
+    let func = delayed.effect
+    return func()
   } else {
     let err = delayed.err
     return new Error10(err)
   }
 }
 __name(run, "run")
+
+/**
+ * returns a delay, that joins two delays. If `left` fails right will not be run, if either fails the result will be an Error
+ */
+function join(left, right) {
+  let _pipe = /* @__PURE__ */ __name(() => {
+    let $ = run(left)
+    if (!$.isOk()) {
+      let err = $[0]
+      return new Error10([new Some(err), new None()])
+    } else {
+      let left_val = $[0]
+      let $1 = run(right)
+      if ($1.isOk()) {
+        let right_val = $1[0]
+        return new Ok8([left_val, right_val])
+      } else {
+        let err = $1[0]
+        return new Error10([new None(), new Some(err)])
+      }
+    }
+  }, "_pipe")
+  return delay_effect(_pipe)
+}
+__name(join, "join")
 function do_retry(delayed, retries, delay, backoff) {
   let delay$1 = (() => {
     if (backoff) {
@@ -325,7 +372,7 @@ __name(retry_with_backoff, "retry_with_backoff")
  * short-circuiting if any in the chain returns an Error
  */
 function drain(delayed) {
-  run(delayed)
+  let $ = run(delayed)
   return void 0
 }
 __name(drain, "drain")
@@ -342,7 +389,7 @@ function do_every(loop$effects, loop$results) {
       loop$effects = rest
       loop$results = toList8([run(head)], results)
     } else {
-      throw makeError("todo", "delay", 176, "do_every", "Empty list", {})
+      throw makeError("todo", "delay", 198, "do_every", "Empty list", {})
     }
   }
 }
@@ -404,7 +451,7 @@ function do_fallthrough(effects) {
       return fallthrough(rest)
     })
   } else {
-    throw makeError("todo", "delay", 191, "do_fallthrough", "Empty list", {})
+    throw makeError("todo", "delay", 213, "do_fallthrough", "Empty list", {})
   }
 }
 __name(do_fallthrough, "do_fallthrough")
@@ -426,6 +473,7 @@ export {
   fallthrough,
   flat_map,
   flatten,
+  join,
   map3 as map,
   repeat2 as repeat,
   retry,

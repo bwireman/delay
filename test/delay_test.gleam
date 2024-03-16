@@ -4,6 +4,8 @@ import delay
 import gleam/list
 import gleam/int
 import gleam/string
+import gleam/option
+import gleam/io
 import simplifile
 
 const drain_filename = "test/side_effects/drain.test"
@@ -17,6 +19,8 @@ const fallthrough_c_filename = "test/side_effects/fallthrough_c.test"
 const retry_filename = "test/side_effects/retry.test"
 
 const retry_with_backoff_filename = "test/side_effects/retry_with_backof.test"
+
+const join_filename = "test/side_effects/join_filename.test"
 
 const repeat_filename = "test/side_effects/repeat.test"
 
@@ -89,6 +93,43 @@ pub fn map_test() {
   |> delay.run()
   |> should.be_ok
   |> should.equal(4)
+}
+
+pub fn join_test() {
+  let l = delay.delay_effect(init_ok(1))
+  let error = delay.delay_effect(init_error(1))
+  let r = delay.delay_effect(init_ok(2))
+
+  delay.join(l, r)
+  |> delay.run()
+  |> should.be_ok()
+  |> should.equal(#(1, 2))
+
+  delay.join(error, r)
+  |> delay.run()
+  |> should.be_error()
+  |> should.equal(#(option.Some(1), option.None))
+
+  delay.join(l, error)
+  |> delay.run()
+  |> should.be_error()
+  |> should.equal(#(option.None, option.Some(1)))
+
+  delay.join(error, error)
+  |> delay.run()
+  |> should.be_error()
+  |> should.equal(#(option.Some(1), option.None))
+
+  let d = delay.delay_effect(fn() { simplifile.create_file(join_filename) })
+
+  delay.join(error, d)
+  |> delay.run()
+  |> should.be_error()
+  |> should.equal(#(option.Some(1), option.None))
+
+  let assert Error(simplifile.Enoent) =
+    simplifile.read(join_filename)
+    |> io.debug
 }
 
 pub fn flat_map_test() {

@@ -2,7 +2,7 @@
 /**
 * Type representing a delayed effect to be lazily evaluated
 */
-export type Delay$<FXE, FXD> = Continue<FXE, FXD> | Stop<FXE>
+export type Delay$<FXE, FXD> = Continue<FXD, FXE> | Stop<FXE>
 
 
 /**
@@ -37,21 +37,30 @@ export function flat_map<FYL, FYM, FYP>(
 * Run a delayed effect and get the result
 * short-circuiting if any in delay in the chain returns an Error
 */
-export function run<FZO, FZP>(delayed: Delay$<FZO, FZP>): Result<FZO, FZP>
+export function run<GAA, GAB>(delayed: Delay$<GAA, GAB>): Result<GAA, GAB>
+
+
+/**
+* returns a delay, that joins two delays. If `left` fails right will not be run, if either fails the result will be an Error
+*/
+export function join<FYW, FYX, FZA, FZB>(
+  left: Delay$<FYW, FYX>,
+  right: Delay$<FZA, FZB>
+): Delay$<[FYW, FZA], [Option$<FYX>, Option$<FZB>]>
 
 
 /**
 * Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
 * NOTE: `delay` is ignored in JS
 */
-export function retry<FYW, FYX>(delayed: Delay$<FYW, FYX>, retries: number, delay: number): Delay$<FYW, FYX>
+export function retry<FZI, FZJ>(delayed: Delay$<FZI, FZJ>, retries: number, delay: number): Delay$<FZI, FZJ>
 
 
 /**
 * Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
 * NOTE: `delay` is ignored in JS
 */
-export function retry_with_backoff<FZC, FZD>(delayed: Delay$<FZC, FZD>, retries: number): Delay$<FZC, FZD>
+export function retry_with_backoff<FZO, FZP>(delayed: Delay$<FZO, FZP>, retries: number): Delay$<FZO, FZP>
 
 
 /**
@@ -64,13 +73,13 @@ export function drain(delayed: Delay$<any, any>): null
 /**
 * Run every effect in sequence and get their results
 */
-export function every<GAF, GAG>(effects: List<Delay$<GAF, GAG>>): List<Result<GAF, GAG>>
+export function every<GAR, GAS>(effects: List<Delay$<GAR, GAS>>): List<Result<GAR, GAS>>
 
 
 /**
 * Repeat a Delay and return the results in a list
 */
-export function repeat<FZY, FZZ>(delayed: Delay$<FZY, FZZ>, repetition: number): List<Result<FZY, FZZ>>
+export function repeat<GAK, GAL>(delayed: Delay$<GAK, GAL>, repetition: number): List<Result<GAK, GAL>>
 
 
 /**
@@ -91,7 +100,7 @@ export function any(effects: List<Delay$<any, any>>): boolean
 * Attempt multiple Delays until one returns an Ok
 * unlike `any/1` this will short circuit on the first Ok
 */
-export function fallthrough<GBI, GBJ>(effects: List<Delay$<GBI, GBJ>>): Result<GBI, GBJ>
+export function fallthrough<GBU, GBV>(effects: List<Delay$<GBU, GBV>>): Result<GBU, GBV>
 
 export class Continue<FXD, FXE> extends CustomType {
   constructor(effect: () => Result<any, any>)
@@ -107,6 +116,8 @@ export class Result<T, E> extends CustomType {
   static isResult(data: unknown): boolean
   isOk(): boolean
 }
+
+export type Option$<GC> = Some<GC> | None
 
 export class List<T> implements any {
   head: T
@@ -124,3 +135,10 @@ export class CustomType {
     [P in K]: this[P]
   }): this
 }
+
+export class Some<GC> extends CustomType {
+  constructor(argument$0: GC)
+  0: GC
+}
+
+export class None extends CustomType {}

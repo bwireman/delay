@@ -1,6 +1,6 @@
 {
   "name": "delay-gleam",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A dead simple data-structure for delaying side effects ⌚!",
   "main": "dist/delay.mjs",
   "type": "module",
@@ -46,6 +46,12 @@
     "gleam",
     "monad",
     "effect",
+    "side-effect",
+    "sideeffect",
+    "browser",
+    "nodejs",
+    "typescript",
+    "functor",
     "delayed"
   ]
 }

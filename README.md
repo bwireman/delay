@@ -35,7 +35,7 @@ let res = delay.run(d)
 
 ## More info
 
-The result of `delay_effect` is really just a first class function with a nice API wrapper. It isn't executed until put through one of `run/1`, `drain/1` or `fallthrough/1`. And can be called as many times as you want.
+The result of `delay_effect` is really just a first class function with a nice API wrapper. It isn't executed until put through one of `run/1`, `drain/1`, `fallthrough/1` or one of the other functions in order to execute a delayed effect. And can be called as many times as you want.
 
 ```gleam
 import gleam/io
@@ -80,13 +80,17 @@ npm i delay-gleam
 
 ```javascript
 import { delay_effect, map, run } from "delay-gleam"
-import { ok, error } from "delay-gleam/extras"
+import { ok, error, get } from "delay-gleam/extras"
 
 d = delay_effect(() => error(console.log("123")))
 d = map(d, (_) => ok(console.log("456")))
-run(d)
+get(run(d))
 // 123
 ```
+
+### Extras
+Helper functions for using this library directly in javascript can be found [here](/dist/extras/extras.mjs)
+
 
 ## FAQ
 

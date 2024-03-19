@@ -41,7 +41,7 @@ export function run<GAA, GAB>(delayed: Delay$<GAA, GAB>): Result<GAA, GAB>
 
 
 /**
-* returns a delay, that joins two delays. If `left` fails right will not be run, if either fails the result will be an Error
+* returns a delay, that joins two delays. If `left` fails `right` will not be run, if either fails the result will be an Error
 */
 export function join<FYW, FYX, FZA, FZB>(
   left: Delay$<FYW, FYX>,

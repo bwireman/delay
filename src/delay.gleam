@@ -71,7 +71,7 @@ pub fn flat_map(
   |> flatten
 }
 
-/// returns a delay, that joins two delays. If `left` fails right will not be run, if either fails the result will be an Error
+/// returns a delay, that joins two delays. If `left` fails `right` will not be run, if either fails the result will be an Error
 pub fn join(
   left: Delay(left_val, left_error),
   right: Delay(right_val, right_error),

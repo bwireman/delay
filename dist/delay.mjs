@@ -303,7 +303,7 @@ function run(delayed) {
 __name(run, "run")
 
 /**
- * returns a delay, that joins two delays. If `left` fails right will not be run, if either fails the result will be an Error
+ * returns a delay, that joins two delays. If `left` fails `right` will not be run, if either fails the result will be an Error
  */
 function join(left, right) {
   let _pipe = /* @__PURE__ */ __name(() => {

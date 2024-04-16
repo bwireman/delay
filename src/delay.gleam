@@ -1,6 +1,6 @@
 import gleam/list
-import gleam/result
 import gleam/option
+import gleam/result
 
 /// Type representing a delayed effect to be lazily evaluated
 pub opaque type Delay(val, error) {

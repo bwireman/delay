@@ -4,7 +4,7 @@
 var __defProp = Object.defineProperty
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true })
 
-import { Ok as Ok7, Error as Error9, toList as toList7 } from "./extras/prelude.mjs"
+import { Ok as Ok7, Error as Error9, toList as toList7, prepend as listPrepend6 } from "./extras/prelude.mjs"
 
 import { CustomType as $CustomType } from "./extras/prelude.mjs"
 var Some = class extends $CustomType {
@@ -88,7 +88,7 @@ function do_reverse_acc(loop$remaining, loop$accumulator) {
       let item = remaining.head
       let rest$1 = remaining.tail
       loop$remaining = rest$1
-      loop$accumulator = toList7([item], accumulator)
+      loop$accumulator = listPrepend6(item, accumulator)
     }
   }
 }
@@ -114,7 +114,7 @@ function do_filter(loop$list, loop$fun, loop$acc) {
       let new_acc = (() => {
         let $ = fun(x)
         if ($) {
-          return toList7([x], acc)
+          return listPrepend6(x, acc)
         } else {
           return acc
         }
@@ -145,7 +145,7 @@ function do_try_map(loop$list, loop$fun, loop$acc) {
         let y = $[0]
         loop$list = xs
         loop$fun = fun
-        loop$acc = toList7([y], acc)
+        loop$acc = listPrepend6(y, acc)
       } else {
         let error = $[0]
         return new Error9(error)
@@ -169,7 +169,7 @@ function do_repeat(loop$a, loop$times, loop$acc) {
     } else {
       loop$a = a
       loop$times = times - 1
-      loop$acc = toList7([a], acc)
+      loop$acc = listPrepend6(a, acc)
     }
   }
 }
@@ -184,6 +184,7 @@ import {
   Ok as Ok8,
   Error as Error10,
   toList as toList8,
+  prepend as listPrepend7,
   CustomType as $CustomType7,
   makeError
 } from "./extras/prelude.mjs"
@@ -382,14 +383,14 @@ function do_every(loop$effects, loop$results) {
     let results = loop$results
     if (effects.hasLength(1)) {
       let last = effects.head
-      return toList8([run(last)], results)
+      return listPrepend7(run(last), results)
     } else if (effects.atLeastLength(1)) {
       let head = effects.head
       let rest = effects.tail
       loop$effects = rest
-      loop$results = toList8([run(head)], results)
+      loop$results = listPrepend7(run(head), results)
     } else {
-      throw makeError("todo", "delay", 198, "do_every", "Empty list", {})
+      throw makeError("panic", "delay", 198, "do_every", "Empty list", {})
     }
   }
 }
@@ -451,7 +452,7 @@ function do_fallthrough(effects) {
       return fallthrough(rest)
     })
   } else {
-    throw makeError("todo", "delay", 213, "do_fallthrough", "Empty list", {})
+    throw makeError("panic", "delay", 213, "do_fallthrough", "Empty list", {})
   }
 }
 __name(do_fallthrough, "do_fallthrough")

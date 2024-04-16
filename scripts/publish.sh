@@ -3,12 +3,12 @@ set -e
 
 cd "$(dirname $0)/.."
 
-VER="v$1"
-if [ -z "$VER" ]; then
+if [ -z "$1" ]; then
     echo "Must set version for release"
     echo "Usage:" "$0" "<version>"
     exit 1
 fi
+VER="v$1"
 
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 if [ "$BRANCH" != "main" ]; then

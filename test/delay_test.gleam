@@ -1,11 +1,11 @@
+import delay
+import gleam/int
+import gleam/io
+import gleam/list
+import gleam/option
+import gleam/string
 import gleeunit
 import gleeunit/should
-import delay
-import gleam/list
-import gleam/int
-import gleam/string
-import gleam/option
-import gleam/io
 import simplifile
 
 const drain_filename = "test/side_effects/drain.test"

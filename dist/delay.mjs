@@ -56,7 +56,7 @@ function all(results) {
 }
 __name(all, "all")
 
-function do_length_acc(loop$list, loop$count) {
+function count_length(loop$list, loop$count) {
   while (true) {
     let list = loop$list
     let count = loop$count
@@ -69,16 +69,12 @@ function do_length_acc(loop$list, loop$count) {
     }
   }
 }
-__name(do_length_acc, "do_length_acc")
-function do_length(list) {
-  return do_length_acc(list, 0)
-}
-__name(do_length, "do_length")
+__name(count_length, "count_length")
 function length2(list) {
-  return do_length(list)
+  return count_length(list, 0)
 }
 __name(length2, "length")
-function do_reverse_acc(loop$remaining, loop$accumulator) {
+function do_reverse(loop$remaining, loop$accumulator) {
   while (true) {
     let remaining = loop$remaining
     let accumulator = loop$accumulator
@@ -92,13 +88,9 @@ function do_reverse_acc(loop$remaining, loop$accumulator) {
     }
   }
 }
-__name(do_reverse_acc, "do_reverse_acc")
-function do_reverse(list) {
-  return do_reverse_acc(list, toList7([]))
-}
 __name(do_reverse, "do_reverse")
 function reverse(xs) {
-  return do_reverse(xs)
+  return do_reverse(xs, toList7([]))
 }
 __name(reverse, "reverse")
 function do_filter(loop$list, loop$fun, loop$acc) {

@@ -8,8 +8,9 @@ cd "$(dirname $0)/.."
 gleam clean
 rm -rf dist/delay.mjs
 rm -rf dist/delay.d.js
+rm -rf dist/extras/LICENCE.comments.txt_
+rm -rf dist/extras/LICENCE.txt_
 gleam build --target javascript
-
 # format input for comments.py
 cat src/delay.gleam | grep pub -B 3 | grep -v "\}" | grep -v import | sed -E 's/\(.*//g' >comments.tmp
 

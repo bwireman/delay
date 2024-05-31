@@ -21,5 +21,6 @@ jobs:
           node-version: "20"
       - run: gleam format --check src test
       - run: gleam deps download
+      - run: gleam run -m go_over
       - run: yarn
       - run: yarn test

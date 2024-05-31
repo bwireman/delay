@@ -32,5 +32,6 @@ build/
 test/side_effects/*.test
 key._
 .vscode/
+.go-over/
 node_modules
 *.tmp

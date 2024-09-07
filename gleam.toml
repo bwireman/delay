@@ -5,15 +5,14 @@ description = "A dead simple data-structure for delaying side effects"
 licences = ["MIT"]
 repository = { type = "github", user = "bwireman", repo = "delay" }
 links = [
-    { title = "NPM", href = "https://www.npmjs.com/package/delay-gleam" },
-    { title = "gleam", href = "https://gleam.run" }
+    { title = "npm", href = "https://www.npmjs.com/package/delay-gleam" },
 ]
 
 [dependencies]
 gleam_stdlib = "~> 0.38"
 
 [dev-dependencies]
-gleeunit = "~> 1.1.2"
+gleeunit = "~> 1.2.0"
 simplifile = ">= 2.0.0 and < 3.0.0"
 go_over = ">= 2.0.0 and < 3.0.0"
 cactus = ">= 1.0.0 and < 2.0.0"
@@ -26,6 +25,6 @@ typescript_declarations = true
 actions = [
     { command = "format", kind = "sub_command", args = ["--check"] },
     { command = "go_over", args = ["--outdated"] },
-    { command = "./scripts/pull_prelude.sh", kind = "binary", args = ["1.3.2"] },
+    { command = "./scripts/pull_prelude.sh", kind = "binary", args = ["1.4.1"] },
     { command = "./scripts/test.sh", kind = "binary" },
 ]

@@ -177,7 +177,7 @@ pub fn retry_test() {
   let write_fail =
     delay.delay_effect(fn() { simplifile.create_file(retry_filename) })
     |> delay.map(fn(_) { simplifile.append("✨", to: retry_filename) })
-    |> delay.map(do_error(simplifile.Unknown))
+    |> delay.map(do_error(simplifile.Unknown("")))
 
   delay.retry(write_fail, 3, 0)
   |> delay.run()
@@ -199,12 +199,12 @@ pub fn retry_with_backoff_test() {
         to: retry_with_backoff_filename,
       )
     })
-    |> delay.map(do_error(simplifile.Unknown))
+    |> delay.map(do_error(simplifile.Unknown("")))
 
   delay.retry_with_backoff(write_fail, 3)
   |> delay.run()
   |> should.be_error()
-  |> should.equal(simplifile.Unknown)
+  |> should.equal(simplifile.Unknown(""))
 
   let assert [x, y, z] =
     simplifile.read(retry_with_backoff_filename)
@@ -231,7 +231,7 @@ pub fn fallthrough_test() {
 
   delay.fallthrough([
     delay.delay_effect(fn() { simplifile.create_file(fallthrough_a_filename) })
-      |> delay.map(do_error(simplifile.Unknown)),
+      |> delay.map(do_error(simplifile.Unknown(""))),
     delay.delay_effect(fn() { simplifile.create_file(fallthrough_b_filename) }),
     delay.delay_effect(fn() { simplifile.create_file(fallthrough_c_filename) }),
     p,

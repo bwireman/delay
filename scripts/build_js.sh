@@ -35,6 +35,8 @@ cat dist/delay.mjs.tmp |
     sed 's/var MASK.*//g' |
     sed 's/var MAX_INDEX_NODE.*//g' |
     sed 's/var MIN_ARRAY_NODE.*//g' |
+    sed 's/var right_trim_regex.*//g' |
+    sed 's/var left_trim_regex.*//g' |
     grep -v "gleam/.*mjs" |
     grep -v "gleam_stdlib/.*mjs" |
     sed 's/\.\.\/gleam.mjs/.\/extras\/prelude.mjs/g' |

@@ -49,9 +49,8 @@ fn do_panic(_) {
 }
 
 @external(erlang, "erlang", "system_time")
-fn system_time() -> Int {
-  0
-}
+@external(javascript, "./test.mjs", "system_time")
+fn system_time() -> Int
 
 pub fn main() {
   let assert Ok(Nil) =
@@ -214,8 +213,8 @@ pub fn retry_with_backoff_test() {
     |> list.map(fn(v) { int.base_parse(v, 10) })
     |> list.map(should.be_ok)
 
-  should.be_true(x <= y)
-  should.be_true(y <= z)
+  should.be_true(x < y)
+  should.be_true(y < z)
 }
 
 pub fn repeat_test() {

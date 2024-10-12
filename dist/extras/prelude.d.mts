@@ -229,7 +229,7 @@ export class BitArray {
   byteAt(index: number): number
   floatFromSlice(index: number, end: number, isBigEndian: boolean): number
   intFromSlice(start: number, end: number, isBigEndian: boolean, isSigned: boolean): number
-  binaryFromSlice(state: number, end: number): BitArray
+  binaryFromSlice(start: number, end: number): BitArray
   sliceAfter(index: number): BitArray
 }
 

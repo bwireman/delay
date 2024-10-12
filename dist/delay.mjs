@@ -192,6 +192,13 @@ function repeat3(a, times) {
 }
 __name(repeat3, "repeat")
 
+// build/dev/javascript/delay/ffi.mjs
+function busy_wait(delay) {
+  const fin = Date.now() + delay
+  while (Date.now() < fin) {}
+}
+__name(busy_wait, "busy_wait")
+
 // build/dev/javascript/delay/delay.mjs
 import {
   Ok as Ok10,
@@ -296,10 +303,6 @@ function flat_map(delayed, func) {
   return flatten(_pipe$1)
 }
 __name(flat_map, "flat_map")
-function sleep(_) {
-  return void 0
-}
-__name(sleep, "sleep")
 
 /**
  * Run a delayed effect and get the result
@@ -352,7 +355,7 @@ function do_retry(delayed, retries, delay, backoff) {
     return run(delayed)
   } else {
     return lazy_or(run(delayed), () => {
-      sleep(delay$1)
+      busy_wait(delay$1)
       return do_retry(delayed, retries - 1, delay$1, backoff)
     })
   }
@@ -361,7 +364,7 @@ __name(do_retry, "do_retry")
 
 /**
  * Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
- * NOTE: `delay` is ignored in JS
+ * Note: JS uses busy waiting
  */
 function retry(delayed, retries, delay) {
   return delay_effect(() => {
@@ -372,7 +375,7 @@ __name(retry, "retry")
 
 /**
  * Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
- * NOTE: `delay` is ignored in JS
+ * Note: JS uses busy waiting
  */
 function retry_with_backoff(delayed, retries) {
   return delay_effect(() => {
@@ -403,7 +406,7 @@ function do_every(loop$effects, loop$results) {
       loop$effects = rest
       loop$results = listPrepend9(run(head), results)
     } else {
-      throw makeError("panic", "delay", 198, "do_every", "Empty list", {})
+      throw makeError("panic", "delay", 196, "do_every", "Empty list", {})
     }
   }
 }
@@ -465,7 +468,7 @@ function do_fallthrough(effects) {
       return fallthrough(rest)
     })
   } else {
-    throw makeError("panic", "delay", 213, "do_fallthrough", "Empty list", {})
+    throw makeError("panic", "delay", 211, "do_fallthrough", "Empty list", {})
   }
 }
 __name(do_fallthrough, "do_fallthrough")

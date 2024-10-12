@@ -93,7 +93,7 @@ pub fn join(
 }
 
 /// Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
-/// NOTE: `delay` is ignored in JS
+/// Note: JS uses busy waiting
 pub fn retry(
   delayed: Delay(val, error),
   retries: Int,
@@ -103,7 +103,7 @@ pub fn retry(
 }
 
 /// Returns a Delay that will be re-attempted `retries` times with an increasing backoff delay
-/// NOTE: there is no backoff in JS
+/// Note: JS uses busy waiting
 pub fn retry_with_backoff(
   delayed: Delay(val, error),
   retries: Int,
@@ -112,10 +112,8 @@ pub fn retry_with_backoff(
 }
 
 @external(erlang, "timer", "sleep")
-fn sleep(_: Int) -> Nil {
-  // JS sleep is a noop
-  Nil
-}
+@external(javascript, "./ffi.mjs", "busy_wait")
+fn sleep(_: Int) -> Nil
 
 fn do_retry(
   delayed: Delay(val, error),

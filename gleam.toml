@@ -25,6 +25,6 @@ typescript_declarations = true
 actions = [
     { command = "format", kind = "sub_command", args = ["--check"] },
     { command = "go_over", args = ["--outdated"] },
-    { command = "./scripts/pull_prelude.sh", kind = "binary", args = ["1.4.1"] },
+    { command = "./scripts/build_js.sh", kind = "binary" },
     { command = "./scripts/test.sh", kind = "binary" },
 ]

@@ -28,6 +28,7 @@ module.exports = {
         "unused-imports"
     ],
     "rules": {
+        "no-empty": "off",
         "no-constant-condition": "off",
         "no-unused-vars": "off",
         "unused-imports/no-unused-imports": "error",

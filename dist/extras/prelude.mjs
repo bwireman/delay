@@ -1,4 +1,4 @@
-// copy of https://github.com/gleam-lang/gleam/blob/v1.4.1/compiler-core/templates/prelude.mjs
+// copy of https://github.com/gleam-lang/gleam/blob/v1.5.0/compiler-core/templates/prelude.mjs
 // ---
 //                                 Apache License
 //                           Version 2.0, January 2004
@@ -246,6 +246,7 @@ export class List {
     return desired === 0
   }
 
+  // @internal
   countLength() {
     let length = 0
     for (let _ of this) length++
@@ -373,20 +374,20 @@ export function sizedInt(value, size, isBigEndian) {
   }
 
   if (isBigEndian) {
-    for (let i = 0; i < byteArray.length; i++) {
+    for (let i = byteArray.length - 1; i >= 0; i--) {
       const byte = value % 256
       byteArray[i] = byte
       value = (value - byte) / 256
     }
   } else {
-    for (let i = byteArray.length - 1; i >= 0; i--) {
+    for (let i = 0; i < byteArray.length; i++) {
       const byte = value % 256
       byteArray[i] = byte
       value = (value - byte) / 256
     }
   }
 
-  return byteArray.reverse()
+  return byteArray
 }
 
 // @internal
@@ -611,6 +612,8 @@ export function makeError(variant, module, line, fn, message, extra) {
   error.gleam_error = variant
   error.module = module
   error.line = line
+  error.function = fn
+  // TODO: Remove this with Gleam v2.0.0
   error.fn = fn
   for (let k in extra) error[k] = extra[k]
   return error

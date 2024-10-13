@@ -23,6 +23,7 @@ jobs:
           gleam-version: ${{ env.gleam }}
           rebar3-version: ${{ env.rebar }}
       - run: gleam format --check src test
+      - run: gleam build
 
   erlang:
     runs-on: ubuntu-latest

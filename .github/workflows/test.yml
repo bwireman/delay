@@ -24,7 +24,7 @@ jobs:
           rebar3-version: ${{ env.rebar }}
       - run: gleam format --check src test
 
-  audit:
+  vitest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

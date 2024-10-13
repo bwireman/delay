@@ -23,23 +23,7 @@ jobs:
           gleam-version: ${{ env.gleam }}
           rebar3-version: ${{ env.rebar }}
       - run: gleam format --check src test
-
-  vitest:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: erlef/setup-beam@v1
-        with:
-          otp-version: ${{ env.otp }}
-          gleam-version: ${{ env.gleam }}
-          rebar3-version: ${{ env.rebar }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.nodelts }}
-          cache: "npm"
-      - run: yarn
-      - run: yarn vitest --run
-
+      - run: gleam build
 
   erlang:
     runs-on: ubuntu-latest
@@ -69,8 +53,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: yarn install
+      - run: yarn
+      - run: yarn build
       - run: gleam test --target javascript --runtime nodejs
+      - run: node --test ./specs/test_dist.spec.js
 
   bun:
     runs-on: ubuntu-latest
@@ -83,7 +69,12 @@ jobs:
           rebar3-version: ${{ env.rebar }}
       - uses: oven-sh/setup-bun@v1
       - run: bun install
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - run: yarn build
       - run: gleam test --target javascript --runtime bun
+      - run: bun test ./specs/test_dist.spec.js
 
   deno:
     runs-on: ubuntu-latest
@@ -97,4 +88,9 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x # Run with latest stable Deno.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - run: yarn build
       - run: gleam test --target javascript --runtime deno
+      - run: deno test ./specs/test_dist.spec.js

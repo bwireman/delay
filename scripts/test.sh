@@ -15,12 +15,12 @@ gleam test --target erlang
 
 echo -e "${GREEN}==> nodejs${NC}"
 gleam test --target javascript --runtime nodejs
+node --test ./specs/test_dist.spec.js
 
 echo -e "${GREEN}==> bun${NC}"
 gleam test --target javascript --runtime bun
+bun test ./specs/test_dist.spec.js
 
 echo -e "${GREEN}==> deno${NC}"
 gleam test --target javascript --runtime deno
-
-echo -e "${GREEN}==> VITE${NC}"
-yarn vitest --run
+deno test ./specs/test_dist.spec.js

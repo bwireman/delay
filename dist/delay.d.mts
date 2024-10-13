@@ -2,7 +2,7 @@
 /**
 * Type representing a delayed effect to be lazily evaluated
 */
-export type Delay$<MGD, MGE> = Continue<MGD, MGE> | Stop<MGE>
+export type Delay$<MGE, MGD> = Continue<MGE, MGD> | Stop<MGE>
 
 
 /**
@@ -102,7 +102,7 @@ export function any(effects: List<Delay$<any, any>>): boolean
 */
 export function fallthrough<MKU, MKV>(effects: List<Delay$<MKU, MKV>>): Result<MKU, MKV>
 
-export class Continue<MGE, MGD> extends CustomType {
+export class Continue<MGD, MGE> extends CustomType {
   constructor(effect: () => Result<any, any>)
   effect(): Result<any, any>
 }

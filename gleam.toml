@@ -20,6 +20,8 @@ cactus = ">= 1.0.0 and < 2.0.0"
 [javascript]
 typescript_declarations = true
 
+[javascript.deno]
+allow_all = true
 
 [cactus.pre-commit]
 actions = [

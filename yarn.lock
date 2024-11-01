@@ -132,9 +132,9 @@
     eslint-visitor-keys "^3.4.3"
 
 "@eslint-community/regexpp@^4.6.1":
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/@eslint-community/regexpp/-/regexpp-4.12.0.tgz#1b8e62d1244557927b9a7fc7a96e5bbd62e1870e"
-  integrity sha512-gh7PdNombP8ftL8TinYC8Xd7WEypB8EKV4PI2h0eMzndKjPCXuo2zUiZtD2Hu+MSPt02Ty2MdS788ADl9ai1rA==
+  version "4.12.1"
+  resolved "https://registry.yarnpkg.com/@eslint-community/regexpp/-/regexpp-4.12.1.tgz#cfc6cffe39df390a3841cde2abccf92eaa7ae0e0"
+  integrity sha512-CCZCDJuduB9OUkFkY2IgppNZMi2lBQgD2qzwXkEia16cge2pijY/aXi96CJMquDMn3nJdlPV1A5KrJEXwfLNzQ==
 
 "@eslint/eslintrc@^2.1.4":
   version "2.1.4"
@@ -180,10 +180,10 @@
   resolved "https://npm.jsr.io/~/11/@jsr/cross__runtime/1.1.0.tgz#E1042301FD44F4684BF76408D0DA0C745DF45743"
   integrity sha512-GGvdy7fGJP4owjp6uQDFbfawuQJrwNJzb2gfotW9wfxtXDfyL5ukPXnHWQwsMF0rUpb5luhuG5r9/h8teYH7lw==
 
-"@jsr/std__internal@^1.0.4":
-  version "1.0.4"
-  resolved "https://npm.jsr.io/~/11/@jsr/std__internal/1.0.4.tgz#395093CA657B9C2CE6C178C15F0C4C6BDE75E9DD"
-  integrity sha512-oPUgFN5+ogDYCFjCSQqqN1sH27VB544HsJKwuwuGkSkeawwNj8CQc7Z7znwYFm3Zoy3FhW+eXErSXgg42UytKw==
+"@jsr/std__internal@^1.0.5":
+  version "1.0.5"
+  resolved "https://npm.jsr.io/~/11/@jsr/std__internal/1.0.5.tgz#237A6B0A905F1010F00D47B81154BBFF65B3AA05"
+  integrity sha512-W2aN7UypJJ6EkfyXt5hBeIijBb8CmZk0jdjCzhOROr0SrXsXZ/V/9Qu1N0NxumFauPDAJz9NcP1mmZ9ZVSXwpQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -207,11 +207,11 @@
     fastq "^1.6.0"
 
 "@std/assert@npm:@jsr/std__assert":
-  version "1.0.6"
-  resolved "https://npm.jsr.io/~/11/@jsr/std__assert/1.0.6.tgz#1BB12E753A11F99816C8747837E95EF3641F00F2"
-  integrity sha512-lWRoX42lexkqLDxxVA6VG+zk++yiOI9udIqigeSpQu0N5ri6l665gkNLbisIAEDkiUg86FTRPb5sLdtUUNfkmg==
+  version "1.0.7"
+  resolved "https://npm.jsr.io/~/11/@jsr/std__assert/1.0.7.tgz#63F305C3880D2CF1914D28EA583016CD6585B1B7"
+  integrity sha512-cdpMMm/XfdukBvTLNIdHoS65CWEgXryrPgMvRFAScoWe79wWYVVx1u4XHWLctslI1u2hI8xQ7tGjWiXrjcKuxQ==
   dependencies:
-    "@jsr/std__internal" "^1.0.4"
+    "@jsr/std__internal" "^1.0.5"
 
 "@ungap/structured-clone@^1.2.0":
   version "1.2.0"

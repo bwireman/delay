@@ -207,9 +207,9 @@
     fastq "^1.6.0"
 
 "@std/assert@npm:@jsr/std__assert":
-  version "1.0.7"
-  resolved "https://npm.jsr.io/~/11/@jsr/std__assert/1.0.7.tgz#63F305C3880D2CF1914D28EA583016CD6585B1B7"
-  integrity sha512-cdpMMm/XfdukBvTLNIdHoS65CWEgXryrPgMvRFAScoWe79wWYVVx1u4XHWLctslI1u2hI8xQ7tGjWiXrjcKuxQ==
+  version "1.0.8"
+  resolved "https://npm.jsr.io/~/11/@jsr/std__assert/1.0.8.tgz#3765A23791E8C8F167B96DA93B12C3E422311737"
+  integrity sha512-2Sw6q3pyvy8loqtFzvtI5OKkTK7i/bWqqChz8b+/+MdyiFlYax4cIoh883/gWz+L8ghK1bbrhnNyhju8GMOkMg==
   dependencies:
     "@jsr/std__internal" "^1.0.5"
 
@@ -299,9 +299,9 @@ concat-map@0.0.1:
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
 cross-spawn@^7.0.2:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
-  integrity sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.5.tgz#910aac880ff5243da96b728bc6521a5f6c2f2f82"
+  integrity sha512-ZVJrKKYunU38/76t0RMOulHOnUcbU9GbpWKAOZ0mhjr7CX6FVrH+4FrAapSOekrgFQ3f/8gwMEuIft0aKq6Hug==
   dependencies:
     path-key "^3.1.0"
     shebang-command "^2.0.0"

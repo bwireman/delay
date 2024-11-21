@@ -102,7 +102,7 @@ export function any(effects: List<Delay$<any, any>>): boolean
 */
 export function fallthrough<MRA, MRB>(effects: List<Delay$<MRA, MRB>>): Result<MRA, MRB>
 
-export class Continue<MMK, MMJ> extends CustomType {
+export class Continue<MMJ, MMK> extends CustomType {
   constructor(effect: () => Result<any, any>)
   effect(): Result<any, any>
 }

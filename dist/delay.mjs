@@ -76,6 +76,9 @@ var unicode_whitespaces = [
   "\u2029"
   // Paragraph separator
 ].join("")
+var trim_start_regex = new RegExp(`^[${unicode_whitespaces}]*`)
+var trim_end_regex = new RegExp(`[${unicode_whitespaces}]*$`)
+var trim_regex = new RegExp(`^[${unicode_whitespaces}]*(.*?)[${unicode_whitespaces}]*$`)
 
 function length_loop(loop$list, loop$count) {
   while (true) {

@@ -2,65 +2,65 @@
 /**
 * Type representing a delayed effect to be lazily evaluated
 */
-export type Delay$<MMK, MMJ> = Continue<MMJ, MMK> | Stop<MMK>
+export type Delay$<MKH, MKI> = Continue<MKH, MKI> | Stop<MKI>
 
 
 /**
 * Stores an effect to be run later, short circuiting on errors
 */
-export function delay_effect<MML, MMM>(func: () => Result<MML, MMM>): Delay$<MML, MMM>
+export function delay_effect<MKJ, MKK>(func: () => Result<MKJ, MKK>): Delay$<MKJ, MKK>
 
 
 /**
 * Chains an operation onto an existing delay. The result of the current delay will be lazily passed to `func`
 * `func` will not be called if the delay has already returned an error
 */
-export function map<MMR, MMS, MMV>(delayed: Delay$<MMR, MMS>, func: (x0: MMR) => Result<MMV, MMS>): Delay$<MMV, MMS>
+export function map<MKP, MKQ, MKT>(delayed: Delay$<MKP, MKQ>, func: (x0: MKP) => Result<MKT, MKQ>): Delay$<MKT, MKQ>
 
 
 /**
 * flatten a nested Delay
 */
-export function flatten<MNJ, MNK>(delayed: Delay$<Delay$<MNJ, MNK>, MNK>): Delay$<MNJ, MNK>
+export function flatten<MLH, MLI>(delayed: Delay$<Delay$<MLH, MLI>, MLI>): Delay$<MLH, MLI>
 
 
 /**
 * Map and then flatten `delayed`
 */
-export function flat_map<MNR, MNS, MNV>(
-  delayed: Delay$<MNR, MNS>,
-  func: (x0: MNR) => Result<Delay$<MNV, MNS>, MNS>
-): Delay$<MNV, MNS>
+export function flat_map<MLP, MLQ, MLT>(
+  delayed: Delay$<MLP, MLQ>,
+  func: (x0: MLP) => Result<Delay$<MLT, MLQ>, MLQ>
+): Delay$<MLT, MLQ>
 
 
 /**
 * Run a delayed effect and get the result
 * short-circuiting if any in delay in the chain returns an Error
 */
-export function run<MPG, MPH>(delayed: Delay$<MPG, MPH>): Result<MPG, MPH>
+export function run<MNE, MNF>(delayed: Delay$<MNE, MNF>): Result<MNE, MNF>
 
 
 /**
 * returns a delay, that joins two delays. If `left` fails `right` will not be run, if either fails the result will be an Error
 */
-export function join<MOC, MOD, MOG, MOH>(
-  left: Delay$<MOC, MOD>,
-  right: Delay$<MOG, MOH>
-): Delay$<[MOC, MOG], [Option$<MOD>, Option$<MOH>]>
+export function join<MMA, MMB, MME, MMF>(
+  left: Delay$<MMA, MMB>,
+  right: Delay$<MME, MMF>
+): Delay$<[MMA, MME], [Option$<MMB>, Option$<MMF>]>
 
 
 /**
 * Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
 * Note: JS uses busy waiting
 */
-export function retry<MOO, MOP>(delayed: Delay$<MOO, MOP>, retries: number, delay: number): Delay$<MOO, MOP>
+export function retry<MMM, MMN>(delayed: Delay$<MMM, MMN>, retries: number, delay: number): Delay$<MMM, MMN>
 
 
 /**
 * Returns a new Delay that will be re-attempted `retries` times with `delay` ms in-between
 * Note: JS uses busy waiting
 */
-export function retry_with_backoff<MOU, MOV>(delayed: Delay$<MOU, MOV>, retries: number): Delay$<MOU, MOV>
+export function retry_with_backoff<MMS, MMT>(delayed: Delay$<MMS, MMT>, retries: number): Delay$<MMS, MMT>
 
 
 /**
@@ -73,13 +73,13 @@ export function drain(delayed: Delay$<any, any>): undefined
 /**
 * Run every effect in sequence and get their results
 */
-export function every<MPX, MPY>(effects: List<Delay$<MPX, MPY>>): List<Result<MPX, MPY>>
+export function every<MNV, MNW>(effects: List<Delay$<MNV, MNW>>): List<Result<MNV, MNW>>
 
 
 /**
 * Repeat a Delay and return the results in a list
 */
-export function repeat<MPQ, MPR>(delayed: Delay$<MPQ, MPR>, repetition: number): List<Result<MPQ, MPR>>
+export function repeat<MNO, MNP>(delayed: Delay$<MNO, MNP>, repetition: number): List<Result<MNO, MNP>>
 
 
 /**
@@ -100,16 +100,16 @@ export function any(effects: List<Delay$<any, any>>): boolean
 * Attempt multiple Delays until one returns an Ok
 * unlike `any/1` this will short circuit on the first Ok
 */
-export function fallthrough<MRA, MRB>(effects: List<Delay$<MRA, MRB>>): Result<MRA, MRB>
+export function fallthrough<MOY, MOZ>(effects: List<Delay$<MOY, MOZ>>): Result<MOY, MOZ>
 
-export class Continue<MMJ, MMK> extends CustomType {
+export class Continue<MKH, MKI> extends CustomType {
   constructor(effect: () => Result<any, any>)
   effect(): Result<any, any>
 }
 
-export class Stop<MMK> extends CustomType {
-  constructor(err: MMK)
-  err: MMK
+export class Stop<MKI> extends CustomType {
+  constructor(err: MKI)
+  err: MKI
 }
 
 export class Result<T, E> extends CustomType {
@@ -117,7 +117,7 @@ export class Result<T, E> extends CustomType {
   isOk(): boolean
 }
 
-export type Option$<FV> = Some<FV> | None
+export type Option$<FQ> = Some<FQ> | None
 
 export class List<T> implements any {
   head: T
@@ -136,9 +136,9 @@ export class CustomType {
   }): this
 }
 
-export class Some<FV> extends CustomType {
-  constructor(argument$0: FV)
-  0: FV
+export class Some<FQ> extends CustomType {
+  constructor(argument$0: FQ)
+  0: FQ
 }
 
 export class None extends CustomType {}

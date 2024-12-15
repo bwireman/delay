@@ -15,7 +15,6 @@ gleam_stdlib = ">= 0.34.0 and < 2.0.0"
 gleeunit = "~> 1.2.0"
 simplifile = ">= 2.0.0 and < 3.0.0"
 cactus = ">= 1.0.0 and < 2.0.0"
-go_over = ">= 2.1.0 and < 3.0.0"
 
 [javascript]
 typescript_declarations = true
@@ -26,10 +25,7 @@ allow_all = true
 [cactus.pre-commit]
 actions = [
     { command = "format", kind = "sub_command", args = ["--check"] },
-    { command = "go_over", args = ["--outdated"] },
     { command = "./scripts/build_js.sh", kind = "binary" },
     { command = "./scripts/test.sh", kind = "binary" },
 ]
 
-[go-over.ignore]
-packages = ["go_over"]

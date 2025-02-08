@@ -48,7 +48,7 @@ pub fn flatten(
         Ok(inner_delay) -> inner_delay
         Error(err) -> Stop(err)
       }
-      // get the inner fn's resullt
+      // get the inner fn's result
       case inner {
         Continue(effect: inner_func) -> inner_func()
         Stop(err) -> Error(err)
@@ -203,7 +203,7 @@ pub fn fallthrough(effects: List(Delay(val, err))) -> Result(val, err) {
   do_fallthrough(effects)
 }
 
-// exists to keep the exposed fallthrough functions paramter names the same in JS
+// exists to keep the exposed fallthrough functions parameter names the same in JS
 fn do_fallthrough(effects: List(Delay(val, err))) -> Result(val, err) {
   case effects {
     [last] -> run(last)

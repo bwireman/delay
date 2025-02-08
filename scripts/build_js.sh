@@ -14,7 +14,7 @@ gleam build --target javascript
 # format input for comments.py
 cat src/delay.gleam | grep pub -B 3 | grep -v "\}" | grep -v import | sed -E 's/\(.*//g' >comments.tmp
 
-yarn esbuild \
+./node_modules/.bin/esbuild \
     build/dev/javascript/delay/delay.mjs \
     --bundle \
     --external:*/prelude.mjs \
@@ -34,6 +34,9 @@ cat dist/delay.mjs.tmp |
     sed 's/var BUCKET_SIZE.*//g' |
     sed 's/var MASK.*//g' |
     sed 's/var MAX_INDEX_NODE.*//g' |
+    sed 's/var unequalDictSymbol.*//g' |
+    sed 's/var trim_start_regex.*//g' |
+    sed 's/var trim_end_regex.*//g' |
     sed 's/var MIN_ARRAY_NODE.*//g' |
     sed 's/var right_trim_regex.*//g' |
     sed 's/var left_trim_regex.*//g' |
@@ -47,7 +50,7 @@ rm dist/delay.mjs.tmp
 # comment ./dist/delay.mjs
 ./scripts/comment.py dist/delay.mjs 'build/dev/javascript/delay/delay.mjs'
 
-yarn dets \
+./node_modules/.bin/dets \
     --files build/dev/javascript/delay/delay.mjs \
     --types build/dev/javascript/delay/delay.d.mts \
     --out dist/delay.d.mts.tmp
@@ -61,10 +64,10 @@ cat dist/delay.d.mts.tmp |
     sed 's/\"\([[:digit:]]\+\)\"/\1/g' >dist/delay.d.mts
 
 
-yarn eslint ./dist/delay.mjs --fix
-yarn eslint ./dist/extras/extras.mjs --fix
-yarn prettier ./dist --write
-yarn prettier ./dist/extras/extras.mjs --write
+./node_modules/.bin/eslint ./dist/delay.mjs --fix
+./node_modules/.bin/eslint ./dist/extras/extras.mjs --fix
+./node_modules/.bin/prettier ./dist --write
+./node_modules/.bin/prettier ./dist/extras/extras.mjs --write
 
 # comment ./dist/delay.d.mts
 ./scripts/comment.py dist/delay.d.mts

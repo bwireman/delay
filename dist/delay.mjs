@@ -76,9 +76,6 @@ var unicode_whitespaces = [
   "\u2029"
   // Paragraph separator
 ].join("")
-var trim_start_regex = new RegExp(`^[${unicode_whitespaces}]*`)
-var trim_end_regex = new RegExp(`[${unicode_whitespaces}]*$`)
-var trim_regex = new RegExp(`^[${unicode_whitespaces}]*(.*?)[${unicode_whitespaces}]*$`)
 
 function length_loop(loop$list, loop$count) {
   while (true) {
@@ -98,23 +95,23 @@ function length2(list) {
   return length_loop(list, 0)
 }
 __name(length2, "length")
-function reverse_loop(loop$remaining, loop$accumulator) {
+function reverse_and_prepend(loop$prefix, loop$suffix) {
   while (true) {
-    let remaining = loop$remaining
-    let accumulator = loop$accumulator
-    if (remaining.hasLength(0)) {
-      return accumulator
+    let prefix = loop$prefix
+    let suffix = loop$suffix
+    if (prefix.hasLength(0)) {
+      return suffix
     } else {
-      let item = remaining.head
-      let rest$1 = remaining.tail
-      loop$remaining = rest$1
-      loop$accumulator = listPrepend7(item, accumulator)
+      let first$1 = prefix.head
+      let rest$1 = prefix.tail
+      loop$prefix = rest$1
+      loop$suffix = listPrepend7(first$1, suffix)
     }
   }
 }
-__name(reverse_loop, "reverse_loop")
+__name(reverse_and_prepend, "reverse_and_prepend")
 function reverse(list) {
-  return reverse_loop(list, toList8([]))
+  return reverse_and_prepend(list, toList8([]))
 }
 __name(reverse, "reverse")
 function filter_loop(loop$list, loop$fun, loop$acc) {
@@ -208,10 +205,10 @@ import {
   Error as Error11,
   toList as toList9,
   prepend as listPrepend8,
-  CustomType as $CustomType8,
-  makeError
+  CustomType as $CustomType7,
+  makeError as makeError2
 } from "./extras/prelude.mjs"
-var Continue = class extends $CustomType8 {
+var Continue = class extends $CustomType7 {
   static {
     __name(this, "Continue")
   }
@@ -220,7 +217,7 @@ var Continue = class extends $CustomType8 {
     this.effect = effect
   }
 }
-var Stop = class extends $CustomType8 {
+var Stop = class extends $CustomType7 {
   static {
     __name(this, "Stop")
   }
@@ -409,7 +406,7 @@ function do_every(loop$effects, loop$results) {
       loop$effects = rest
       loop$results = listPrepend8(run(head), results)
     } else {
-      throw makeError("panic", "delay", 196, "do_every", "Empty list", {})
+      throw makeError2("panic", "delay", 196, "do_every", "Empty list", {})
     }
   }
 }
@@ -471,7 +468,7 @@ function do_fallthrough(effects) {
       return fallthrough(rest)
     })
   } else {
-    throw makeError("panic", "delay", 211, "do_fallthrough", "Empty list", {})
+    throw makeError2("panic", "delay", 211, "do_fallthrough", "Empty list", {})
   }
 }
 __name(do_fallthrough, "do_fallthrough")

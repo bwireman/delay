@@ -18,12 +18,12 @@ echo "// copy of https://github.com/gleam-lang/gleam/blob/${VER}/compiler-core/t
 echo "// ---" > dist/extras/prelude.d.mts
 
 cat dist/extras/LICENCE.comments.txt_ >> dist/extras/prelude.d.mts
-http --print=b "https://raw.githubusercontent.com/gleam-lang/gleam/${VER}/compiler-core/templates/prelude.d.mts" >> dist/extras/prelude.d.mts
+gleam export typescript-prelude >> dist/extras/prelude.d.mts
 
 echo "// copy of https://github.com/gleam-lang/gleam/blob/${VER}/compiler-core/templates/prelude.mjs" > dist/extras/prelude.mjs
 echo "// ---" >> dist/extras/prelude.mjs
 
 cat dist/extras/LICENCE.comments.txt_ >> dist/extras/prelude.mjs
-http --print=b "https://raw.githubusercontent.com/gleam-lang/gleam/${VER}/compiler-core/templates/prelude.mjs" >> dist/extras/prelude.mjs
+gleam export javascript-prelude >> dist/extras/prelude.mjs
 
 rm -rf dist/extras/LICENCE.comments.txt_

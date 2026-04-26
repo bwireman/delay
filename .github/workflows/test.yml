@@ -52,8 +52,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: yarn
-      - run: yarn build
       - run: gleam test --target javascript --runtime nodejs
 
   bun:
@@ -70,7 +68,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
-      - run: yarn build
       - run: gleam test --target javascript --runtime bun
 
   deno:
@@ -88,5 +85,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
-      - run: yarn build
       - run: gleam test --target javascript --runtime deno

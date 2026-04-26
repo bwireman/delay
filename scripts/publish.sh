@@ -25,14 +25,12 @@ function publish {
     gleam clean
     ./scripts/update.sh
     gleam build --target erlang
-    ./scripts/build_js.sh
     ./scripts/test.sh
     echo "Tagging" "$VER"
     git tag "$VER"
     git push origin "$VER"
     echo "Publishing to Hex" "$VER"
-    HEX_API_KEY=$(cat key._) gleam publish
-    yarn publish
+    gleam publish
     echo "🚀"
 }
 

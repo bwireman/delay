@@ -25,7 +25,6 @@ allow_all = true
 [cactus.pre-commit]
 actions = [
     { command = "format", kind = "sub_command", args = ["--check"] },
-    { command = "./scripts/build_js.sh", kind = "binary" },
     { command = "./scripts/test.sh", kind = "binary" },
 ]
 

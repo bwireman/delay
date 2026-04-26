@@ -1,6 +1,5 @@
 import delay
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/option
 import gleam/string
@@ -126,9 +125,7 @@ pub fn join_test() {
   |> should.be_error()
   |> should.equal(#(option.Some(1), option.None))
 
-  let assert Error(simplifile.Enoent) =
-    simplifile.read(join_filename)
-    |> io.debug
+  let assert Error(simplifile.Enoent) = simplifile.read(join_filename)
 }
 
 pub fn flat_map_test() {

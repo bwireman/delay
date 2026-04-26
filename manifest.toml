@@ -2,21 +2,22 @@
 # You typically do not need to edit this file
 
 packages = [
-  { name = "cactus", version = "1.3.3", build_tools = ["gleam"], requirements = ["filepath", "gleam_stdlib", "gleither", "gxyz", "platform", "shellout", "simplifile", "tom"], otp_app = "cactus", source = "hex", outer_checksum = "3F50624B76847F6A4609B676AB096238A28D88989256F9DD52B0E1A99B4E3A0F" },
-  { name = "filepath", version = "1.1.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "filepath", source = "hex", outer_checksum = "67A6D15FB39EEB69DD31F8C145BB5A421790581BD6AA14B33D64D5A55DBD6587" },
-  { name = "gleam_stdlib", version = "0.54.0", build_tools = ["gleam"], requirements = [], otp_app = "gleam_stdlib", source = "hex", outer_checksum = "723BA61A2BAE8D67406E59DD88CEA1B3C3F266FC8D70F64BE9FEC81B4505B927" },
-  { name = "gleave", version = "1.0.0", build_tools = ["gleam"], requirements = [], otp_app = "gleave", source = "hex", outer_checksum = "EBEB0DF9C764A6CB22623FF6F03A0BC978D75225303F3BBDEEB705A2DD700D0D" },
-  { name = "gleeunit", version = "1.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleeunit", source = "hex", outer_checksum = "F7A7228925D3EE7D0813C922E062BFD6D7E9310F0BEE585D3A42F3307E3CFD13" },
-  { name = "gleither", version = "2.1.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleither", source = "hex", outer_checksum = "86606790899097D8588C0F70C654D9626C634AF14E18F618F4C351FEC6FDA773" },
-  { name = "gxyz", version = "0.4.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "gleave"], otp_app = "gxyz", source = "hex", outer_checksum = "115416738A588B8E095A44AB72A31248D3388C7E748D762F94186C1143DD3D4F" },
+  { name = "cactus", version = "1.3.5", build_tools = ["gleam"], requirements = ["filepath", "gleam_stdlib", "gleither", "gxyz", "platform", "shellout", "simplifile", "tom"], otp_app = "cactus", source = "hex", outer_checksum = "515EDE2A216C19F95E9C6E9556B684289A12891CD831297A364DFF2CC6578F09" },
+  { name = "filepath", version = "1.1.2", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "filepath", source = "hex", outer_checksum = "B06A9AF0BF10E51401D64B98E4B627F1D2E48C154967DA7AF4D0914780A6D40A" },
+  { name = "gleam_stdlib", version = "1.0.0", build_tools = ["gleam"], requirements = [], otp_app = "gleam_stdlib", source = "hex", outer_checksum = "960090C2FB391784BB34267B099DC9315CC1B1F6013E7415BC763CEF1905D7D3" },
+  { name = "gleam_time", version = "1.8.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleam_time", source = "hex", outer_checksum = "533D8723774D61AD4998324F5DD1DABDCDBFABAFB9E87CB5D03C6955448FC97D" },
+  { name = "gleave", version = "1.0.1", build_tools = ["gleam"], requirements = [], otp_app = "gleave", source = "hex", outer_checksum = "E34C23F8AD68A3DB19F19EE044193137B0245CB5CEFF83B3B310BD584BF74A07" },
+  { name = "gleeunit", version = "1.10.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleeunit", source = "hex", outer_checksum = "254B697FE72EEAD7BF82E941723918E421317813AC49923EE76A18C788C61E72" },
+  { name = "gleither", version = "2.2.1", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleither", source = "hex", outer_checksum = "4CF283FE767D204A58557F5A5EA3EB247AAEF802B4E57297429F7543D368875C" },
+  { name = "gxyz", version = "0.6.1", build_tools = ["gleam"], requirements = ["gleam_stdlib", "gleave"], otp_app = "gxyz", source = "hex", outer_checksum = "44FD007EF457D51B9BB951C1FA447EE202A5A0D18F1C958E26CF8FE367AACA9E" },
   { name = "platform", version = "1.0.0", build_tools = ["gleam"], requirements = [], otp_app = "platform", source = "hex", outer_checksum = "8339420A95AD89AAC0F82F4C3DB8DD401041742D6C3F46132A8739F6AEB75391" },
-  { name = "shellout", version = "1.6.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "shellout", source = "hex", outer_checksum = "E2FCD18957F0E9F67E1F497FC9FF57393392F8A9BAEAEA4779541DE7A68DD7E0" },
-  { name = "simplifile", version = "2.2.0", build_tools = ["gleam"], requirements = ["filepath", "gleam_stdlib"], otp_app = "simplifile", source = "hex", outer_checksum = "0DFABEF7DC7A9E2FF4BB27B108034E60C81BEBFCB7AB816B9E7E18ED4503ACD8" },
-  { name = "tom", version = "1.1.1", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "tom", source = "hex", outer_checksum = "0910EE688A713994515ACAF1F486A4F05752E585B9E3209D8F35A85B234C2719" },
+  { name = "shellout", version = "1.8.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "shellout", source = "hex", outer_checksum = "C416356D45151F298108C9DB9CD1EDE0313F620B5EDBB5766CD7237659D87841" },
+  { name = "simplifile", version = "2.4.0", build_tools = ["gleam"], requirements = ["filepath", "gleam_stdlib"], otp_app = "simplifile", source = "hex", outer_checksum = "7C18AFA4FED0B4CE1FA5B0B4BAC1FA1744427054EA993565F6F3F82E5453170D" },
+  { name = "tom", version = "2.0.2", build_tools = ["gleam"], requirements = ["gleam_stdlib", "gleam_time"], otp_app = "tom", source = "hex", outer_checksum = "234A842F3D087D35737483F5DFB6DE9839E3366EF0CAF8726D2D094210227670" },
 ]
 
 [requirements]
-cactus = { version = ">= 1.0.0 and < 2.0.0" }
+cactus = { version = ">= 1.3.3 and < 2.0.0" }
 gleam_stdlib = { version = ">= 0.34.0 and < 2.0.0" }
-gleeunit = { version = "~> 1.2.0" }
-simplifile = { version = ">= 2.0.0 and < 3.0.0" }
+gleeunit = { version = ">= 1.4.0 and < 2.0.0" }
+simplifile = { version = ">= 2.2.1 and < 3.0.0" }

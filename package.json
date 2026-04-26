@@ -37,11 +37,12 @@
     "@cross/test": "npm:@jsr/cross__test",
     "@std/assert": "npm:@jsr/std__assert",
     "dets": "^0.14.2",
-    "esbuild": "^0.20.1",
+    "esbuild": "^0.25.4",
     "eslint": "^8.57.0",
     "eslint-plugin-unused-imports": "^3.1.0",
     "prettier": "3.2.5",
     "sync-fetch": "^0.5.2",
+    "tsup": "^8.4.0",
     "typescript": "^5.3.3",
     "yaml": "^2.4.4"
   },

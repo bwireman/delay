@@ -7,8 +7,8 @@ on:
   pull_request:
 
 env:
-  otp: "27.0"
-  gleam: "1.8.0"
+  otp: "28.0"
+  gleam: "1.16.0"
   rebar: "3"
 
 jobs:
@@ -89,7 +89,7 @@ jobs:
           deno-version: v2.x # Run with latest stable Deno.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - run: yarn build
       - run: gleam test --target javascript --runtime deno
       - run: deno test ./specs/test_dist.spec.js

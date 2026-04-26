@@ -1,0 +1,17 @@
+{
+  "name": "delay",
+  "version": "1.0.0",
+  "description": "A dead simple data-structure for delaying side effects ⌚! Written in the excellent [gleam ✨](https://gleam.run/) language. Supporting both Erlang & Javascript targets",
+  "homepage": "https://github.com/bwireman/delay#readme",
+  "bugs": {
+    "url": "https://github.com/bwireman/delay/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bwireman/delay.git"
+  },
+  "license": "MIT",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js"
+}
